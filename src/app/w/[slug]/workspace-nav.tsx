@@ -7,9 +7,10 @@ import { usePathname } from "next/navigation"
 
 interface WorkspaceNavProps {
   workspaceSlug: string
+  isAdmin: boolean
 }
 
-export function WorkspaceNav({ workspaceSlug }: WorkspaceNavProps) {
+export function WorkspaceNav({ workspaceSlug, isAdmin }: WorkspaceNavProps) {
   const pathname = usePathname()
 
   const navItems = [
@@ -18,20 +19,23 @@ export function WorkspaceNav({ workspaceSlug }: WorkspaceNavProps) {
       href: `/w/${workspaceSlug}`,
       icon: BarChart3,
       isActive: pathname === `/w/${workspaceSlug}`,
+      showForMembers: true, // Todos pueden ver el dashboard
     },
     {
       label: "Miembros",
       href: `/w/${workspaceSlug}/members`,
       icon: Users,
       isActive: pathname === `/w/${workspaceSlug}/members`,
+      showForMembers: true, // Todos pueden ver miembros
     },
     {
       label: "Configuración",
       href: `/w/${workspaceSlug}/settings`,
       icon: Settings,
       isActive: pathname === `/w/${workspaceSlug}/settings`,
+      showForMembers: false, // Solo admins pueden ver configuración
     },
-  ]
+  ].filter(item => isAdmin || item.showForMembers)
 
   return (
     <nav className="bg-white border rounded-lg p-4">

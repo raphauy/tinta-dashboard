@@ -1,9 +1,8 @@
 import { auth } from "@/lib/auth"
 import { getWorkspaceBySlug, getWorkspaceUsers, isUserWorkspaceAdmin } from "@/services/workspace-service"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
   Table,
   TableBody,
@@ -12,8 +11,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { Plus, Shield, User } from "lucide-react"
+import { Shield, User } from "lucide-react"
 import { notFound } from "next/navigation"
+import { InviteUserDialog } from "./invite-user-dialog"
+import { MemberActionsClient } from "./member-actions-client"
 
 interface MembersListProps {
   slug: string
@@ -76,10 +77,7 @@ export async function MembersList({ slug }: MembersListProps) {
               </CardDescription>
             </div>
             {isCurrentUserAdmin && (
-              <Button size="sm">
-                <Plus className="h-4 w-4 mr-2" />
-                Invitar Usuario
-              </Button>
+              <InviteUserDialog workspaceId={workspace.id} workspaceSlug={slug} />
             )}
           </div>
         </CardHeader>
@@ -110,6 +108,13 @@ export async function MembersList({ slug }: MembersListProps) {
                       <TableCell>
                         <div className="flex items-center space-x-3">
                           <Avatar className="h-8 w-8">
+                            {workspaceUser.user.image && (
+                              <AvatarImage 
+                                src={workspaceUser.user.image} 
+                                alt={workspaceUser.user.name || workspaceUser.user.email}
+                                className="object-cover"
+                              />
+                            )}
                             <AvatarFallback>
                               {getInitials(workspaceUser.user.name, workspaceUser.user.email)}
                             </AvatarFallback>
@@ -129,11 +134,11 @@ export async function MembersList({ slug }: MembersListProps) {
                       <TableCell>{formatDate(workspaceUser.createdAt)}</TableCell>
                       {isCurrentUserAdmin && (
                         <TableCell className="text-right">
-                          {workspaceUser.userId !== session.user.id && (
-                            <Button variant="ghost" size="sm">
-                              Gestionar
-                            </Button>
-                          )}
+                          <MemberActionsClient
+                            workspaceUser={workspaceUser}
+                            workspaceSlug={slug}
+                            currentUserId={session.user.id}
+                          />
                         </TableCell>
                       )}
                     </TableRow>

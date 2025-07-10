@@ -40,6 +40,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           id: user.id,
           email: user.email,
           name: user.name,
+          image: user.image,
           role: user.role || "" // Usar cadena vacía para usuarios normales
         }
       }
@@ -56,13 +57,26 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       
       return true
     },
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger, session }) {
       if (user) {
         const dbUser = await getUserForAuth(user.email!)
         
         if (dbUser) {
           token.role = dbUser.role || "" // Usar cadena vacía para usuarios normales
           token.id = dbUser.id
+          token.name = dbUser.name
+          token.image = dbUser.image
+        }
+      }
+      
+      // Handle session updates (when user updates profile)
+      if (trigger === "update" && session) {
+        // Update token with new session data
+        if (session.name !== undefined) {
+          token.name = session.name
+        }
+        if (session.image !== undefined) {
+          token.image = session.image
         }
       }
       
@@ -72,6 +86,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       if (token) {
         session.user.id = token.id as string
         session.user.role = token.role as string
+        session.user.name = token.name as string
+        session.user.image = token.image as string | null
       }
       
       return session

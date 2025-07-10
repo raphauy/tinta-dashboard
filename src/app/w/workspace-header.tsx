@@ -1,6 +1,6 @@
 "use client"
 
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -19,6 +19,7 @@ interface WorkspaceHeaderProps {
     name: string | null
     email: string
     role: string
+    image?: string | null
   }
 }
 
@@ -69,6 +70,13 @@ export function WorkspaceHeader({ user }: WorkspaceHeaderProps) {
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="relative h-8 w-8 rounded-full">
                 <Avatar className="h-8 w-8">
+                  {user.image && (
+                    <AvatarImage 
+                      src={user.image} 
+                      alt={user.name || user.email}
+                      className="object-cover"
+                    />
+                  )}
                   <AvatarFallback>
                     {getInitials(user.name, user.email)}
                   </AvatarFallback>

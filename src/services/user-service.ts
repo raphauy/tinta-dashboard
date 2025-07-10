@@ -9,6 +9,8 @@ export type UserWithStringRole = Omit<User, 'role'> & { role: string }
 export const createUserSchema = z.object({
   email: z.string().email("Email inválido"),
   name: z.string().min(1, "Nombre requerido").optional(),
+  image: z.string().url().nullable().optional(),
+  isOnboarded: z.boolean().optional(),
   role: z.nativeEnum(Role).nullable().optional() // Solo para superadmins
 })
 
@@ -126,6 +128,7 @@ export async function getUserForAuth(email: string): Promise<UserWithStringRole 
       email: true,
       name: true,
       role: true,
+      image: true,
       createdAt: true,
       updatedAt: true
     }

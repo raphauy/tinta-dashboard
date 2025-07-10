@@ -7,6 +7,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Shield, User } from "lucide-react"
 import { getAllUsers } from "@/services/user-service"
 import { UserActionsClient } from "./user-actions-client"
@@ -16,6 +17,7 @@ type User = {
   email: string
   name: string | null
   role: string
+  image: string | null
   createdAt: Date
   updatedAt: Date
 }
@@ -31,6 +33,18 @@ export async function UsersList() {
       hour: "2-digit",
       minute: "2-digit",
     }).format(new Date(date))
+  }
+
+  const getInitials = (name: string | null, email: string) => {
+    if (name) {
+      return name
+        .split(" ")
+        .map(n => n[0])
+        .join("")
+        .toUpperCase()
+        .slice(0, 2)
+    }
+    return email.slice(0, 2).toUpperCase()
   }
 
   const getRoleBadge = (role: string) => {
@@ -54,7 +68,6 @@ export async function UsersList() {
           <TableHeader>
             <TableRow>
               <TableHead>Usuario</TableHead>
-              <TableHead>Email</TableHead>
               <TableHead>Rol</TableHead>
               <TableHead>Registrado</TableHead>
               <TableHead>Última actividad</TableHead>
@@ -64,17 +77,37 @@ export async function UsersList() {
           <TableBody>
             {users.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={6} className="text-center text-muted-foreground">
+                <TableCell colSpan={5} className="text-center text-muted-foreground">
                   No hay usuarios registrados
                 </TableCell>
               </TableRow>
             ) : (
               users.map((user) => (
                 <TableRow key={user.id}>
-                  <TableCell className="font-medium">
-                    {user.name || "Sin nombre"}
+                  <TableCell>
+                    <div className="flex items-center space-x-3">
+                      <Avatar className="h-8 w-8">
+                        {user.image && (
+                          <AvatarImage 
+                            src={user.image} 
+                            alt={user.name || user.email}
+                            className="object-cover"
+                          />
+                        )}
+                        <AvatarFallback className="bg-gray-100">
+                          {getInitials(user.name, user.email)}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <div className="font-medium">
+                          {user.name || "Sin nombre"}
+                        </div>
+                        <div className="text-sm text-gray-500">
+                          {user.email}
+                        </div>
+                      </div>
+                    </div>
                   </TableCell>
-                  <TableCell>{user.email}</TableCell>
                   <TableCell>{getRoleBadge(user.role)}</TableCell>
                   <TableCell>{formatDate(user.createdAt)}</TableCell>
                   <TableCell>{formatDate(user.updatedAt)}</TableCell>

@@ -123,18 +123,20 @@ export async function WorkspaceDashboard({ slug }: WorkspaceDashboardProps) {
                 Ver miembros →
               </a>
             </div>
-            <div className="p-4 border rounded-lg">
-              <h3 className="font-medium mb-2">Configuración</h3>
-              <p className="text-sm text-gray-600 mb-3">
-                Ajusta la configuración del workspace
-              </p>
-              <a 
-                href={`/w/${slug}/settings`}
-                className="text-blue-600 hover:text-blue-800 text-sm font-medium"
-              >
-                Configurar →
-              </a>
-            </div>
+            {currentUserWorkspace?.role === "admin" && (
+              <div className="p-4 border rounded-lg">
+                <h3 className="font-medium mb-2">Configuración</h3>
+                <p className="text-sm text-gray-600 mb-3">
+                  Ajusta la configuración del workspace
+                </p>
+                <a 
+                  href={`/w/${slug}/settings`}
+                  className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                >
+                  Configurar →
+                </a>
+              </div>
+            )}
           </div>
         </CardContent>
       </Card>

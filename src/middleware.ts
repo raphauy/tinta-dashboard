@@ -22,9 +22,13 @@ export async function middleware(request: NextRequest) {
   const isLoggedIn = !!token
   const userRole = token?.role as string || ""
 
-  // Public routes
-  if (nextUrl.pathname === "/login" || nextUrl.pathname === "/") {
-    if (isLoggedIn) {
+  // Public routes (no authentication required)
+  const publicRoutes = ["/login", "/", "/register"]
+  const isPublicRoute = publicRoutes.includes(nextUrl.pathname) || nextUrl.pathname.startsWith("/invite/")
+  
+  if (isPublicRoute) {
+    // Only redirect logged-in users from login and home pages
+    if (isLoggedIn && (nextUrl.pathname === "/login" || nextUrl.pathname === "/")) {
       // Redirect authenticated users to their dashboard
       // Superadmins go to admin, others go to workspaces
       const redirectTo = userRole === "superadmin" ? "/admin" : "/w"

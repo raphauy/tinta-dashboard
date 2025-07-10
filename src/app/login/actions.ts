@@ -1,6 +1,6 @@
 "use server"
 
-import { getUserByEmail } from "@/services/user-service"
+import { getUserByEmail, createUser } from "@/services/user-service"
 import { generateOtp, createOtpToken } from "@/services/auth-service"
 import { sendOtpEmail } from "@/services/email-service"
 import { signIn } from "@/lib/auth"
@@ -11,7 +11,7 @@ export type AuthResult = {
 }
 
 /**
- * Verifica si el email existe en la base de datos
+ * Verifica si el email existe en la base de datos o lo permite para registro automático
  */
 export async function checkEmailAction(email: string): Promise<AuthResult> {
   try {
@@ -19,15 +19,8 @@ export async function checkEmailAction(email: string): Promise<AuthResult> {
       return { success: false, error: "Email es requerido" }
     }
 
-    const user = await getUserByEmail(email)
-
-    if (!user) {
-      return { 
-        success: false, 
-        error: "Usuario no encontrado. Contacta al administrador." 
-      }
-    }
-
+    // En un sistema con invitaciones, permitimos cualquier email válido
+    // El usuario se creará automáticamente durante la verificación OTP si no existe
     return { success: true }
   } catch (error) {
     console.error("Error checking email:", error)
@@ -44,10 +37,18 @@ export async function sendOtpAction(email: string): Promise<AuthResult> {
       return { success: false, error: "Email es requerido" }
     }
 
-    // Verificar que el usuario existe
-    const user = await getUserByEmail(email)
+    // Verificar si el usuario existe, si no, crear uno nuevo
+    let user = await getUserByEmail(email)
     if (!user) {
-      return { success: false, error: "Usuario no encontrado" }
+      const newUser = await createUser({ 
+        email,
+        isOnboarded: false // Nuevos usuarios necesitan onboarding
+      })
+      // Convertir a UserWithStringRole para compatibilidad
+      user = {
+        ...newUser,
+        role: newUser.role || ""
+      }
     }
 
     // Generar OTP
@@ -61,7 +62,12 @@ export async function sendOtpAction(email: string): Promise<AuthResult> {
     })
 
     // Enviar email
-    await sendOtpEmail(email, otp)
+    const emailResult = await sendOtpEmail({ to: email, otp })
+    
+    if (!emailResult.success) {
+      console.error("Error sending OTP email:", emailResult.error)
+      return { success: false, error: "Error al enviar el código OTP por email" }
+    }
 
     return { success: true }
   } catch (error) {

@@ -74,7 +74,7 @@ export function WorkspaceActionsClient({ workspace }: WorkspaceActionsClientProp
         
         {/* Ver usuarios */}
         <DropdownMenuItem asChild>
-          <Link href={`/admin/workspaces/${workspace.id}/users`}>
+          <Link href={`/w/${workspace.slug}/members`}>
             <Users className="mr-2 h-4 w-4" />
             Ver Usuarios ({workspace._count.users})
           </Link>

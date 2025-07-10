@@ -1,6 +1,7 @@
 import { auth } from "@/lib/auth"
 import { redirect } from "next/navigation"
 import { WorkspaceHeader } from "./workspace-header"
+import { SessionProvider } from "next-auth/react"
 
 export default async function WorkspaceLayout({
   children,
@@ -16,11 +17,13 @@ export default async function WorkspaceLayout({
   // All authenticated users can access workspaces (including superadmins)
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <WorkspaceHeader user={session.user} />
-      <main className="container mx-auto px-4 py-6">
-        {children}
-      </main>
-    </div>
+    <SessionProvider>
+      <div className="min-h-screen bg-gray-50">
+        <WorkspaceHeader user={session.user} />
+        <main className="container mx-auto px-4 py-6">
+          {children}
+        </main>
+      </div>
+    </SessionProvider>
   )
 }

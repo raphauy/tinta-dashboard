@@ -11,9 +11,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { LogOut, User } from "lucide-react"
 import { logoutAction } from "@/app/admin/actions"
+import Link from "next/link"
 
 export function AdminHeader() {
   const { data: session } = useSession()
@@ -45,6 +46,13 @@ export function AdminHeader() {
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="h-10 w-10 rounded-full">
                     <Avatar className="h-8 w-8">
+                      {session?.user?.image && (
+                        <AvatarImage 
+                          src={session.user.image} 
+                          alt={session.user.name || session.user.email || 'Usuario'}
+                          className="object-cover"
+                        />
+                      )}
                       <AvatarFallback className="bg-blue-500 text-white">
                         {userInitials}
                       </AvatarFallback>
@@ -63,9 +71,11 @@ export function AdminHeader() {
                     </div>
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem>
-                    <User className="mr-2 h-4 w-4" />
-                    Perfil
+                  <DropdownMenuItem asChild>
+                    <Link href="/w/profile" className="cursor-pointer">
+                      <User className="mr-2 h-4 w-4" />
+                      Perfil
+                    </Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem 

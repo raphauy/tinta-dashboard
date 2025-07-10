@@ -1,5 +1,5 @@
 import { auth } from "@/lib/auth"
-import { getWorkspaceBySlug, isUserInWorkspace } from "@/services/workspace-service"
+import { getWorkspaceBySlug, isUserInWorkspace, isUserWorkspaceAdmin } from "@/services/workspace-service"
 import { redirect, notFound } from "next/navigation"
 import { WorkspaceNav } from "./workspace-nav"
 
@@ -33,6 +33,9 @@ export default async function WorkspaceLayout({
     }
   }
 
+  // Determinar si el usuario es admin del workspace para mostrar opciones de navegación
+  const isAdmin = await isUserWorkspaceAdmin(session.user.id, workspace.id)
+
   return (
     <div className="space-y-6">
       {/* Workspace Header */}
@@ -55,7 +58,7 @@ export default async function WorkspaceLayout({
       </div>
 
       {/* Navigation */}
-      <WorkspaceNav workspaceSlug={slug} />
+      <WorkspaceNav workspaceSlug={slug} isAdmin={isAdmin} />
 
       {/* Content */}
       {children}
