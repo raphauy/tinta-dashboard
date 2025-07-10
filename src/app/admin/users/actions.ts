@@ -1,35 +1,18 @@
 "use server"
 
 import { auth } from "@/lib/auth"
-import { prisma } from "@/lib/prisma"
 import { revalidatePath } from "next/cache"
+import { getAllUsers, deleteUser } from "@/services/user-service"
 
 export async function getUsersAction() {
   try {
     const session = await auth()
     
-    if (!session?.user || session.user.role !== "ADMIN") {
+    if (!session?.user || session.user.role !== "superadmin") {
       throw new Error("No autorizado")
     }
 
-    const users = await prisma.user.findMany({
-      select: {
-        id: true,
-        email: true,
-        name: true,
-        role: true,
-        createdAt: true,
-        updatedAt: true,
-        _count: {
-          select: {
-            otpTokens: true
-          }
-        }
-      },
-      orderBy: {
-        createdAt: "desc"
-      }
-    })
+    const users = await getAllUsers()
 
     return { success: true, users }
   } catch (error) {
@@ -41,22 +24,22 @@ export async function getUsersAction() {
   }
 }
 
-export async function updateUserRoleAction(userId: string, newRole: "ADMIN" | "CLIENT") {
+export async function updateUserRoleAction(userId: string, isSuperadmin: boolean) {
   try {
     const session = await auth()
     
-    if (!session?.user || session.user.role !== "ADMIN") {
+    if (!session?.user || session.user.role !== "superadmin") {
       throw new Error("No autorizado")
     }
 
-    // No permitir que un admin se quite a sí mismo los permisos de admin
-    if (session.user.id === userId && newRole === "CLIENT") {
-      throw new Error("No puedes cambiar tu propio rol de administrador")
+    // No permitir que un superadmin se quite a sí mismo los permisos
+    if (session.user.id === userId && !isSuperadmin) {
+      throw new Error("No puedes cambiar tu propio rol de superadmin")
     }
 
-    await prisma.user.update({
-      where: { id: userId },
-      data: { role: newRole }
+    const { updateUser } = await import("@/services/user-service")
+    await updateUser(userId, { 
+      role: isSuperadmin ? "superadmin" : null 
     })
 
     revalidatePath("/admin/users")
@@ -74,7 +57,7 @@ export async function deleteUserAction(userId: string) {
   try {
     const session = await auth()
     
-    if (!session?.user || session.user.role !== "ADMIN") {
+    if (!session?.user || session.user.role !== "superadmin") {
       throw new Error("No autorizado")
     }
 
@@ -83,9 +66,7 @@ export async function deleteUserAction(userId: string) {
       throw new Error("No puedes eliminar tu propia cuenta")
     }
 
-    await prisma.user.delete({
-      where: { id: userId }
-    })
+    await deleteUser(userId)
 
     revalidatePath("/admin/users")
     return { success: true, message: "Usuario eliminado correctamente" }
@@ -102,30 +83,27 @@ export async function createUserAction(formData: FormData) {
   try {
     const session = await auth()
     
-    if (!session?.user || session.user.role !== "ADMIN") {
+    if (!session?.user || session.user.role !== "superadmin") {
       throw new Error("No autorizado")
     }
 
     const email = formData.get("email") as string
     const name = formData.get("name") as string
-    const role = formData.get("role") as "ADMIN" | "CLIENT"
+    const isSuperadmin = formData.get("role") === "superadmin"
 
+    const { getUserByEmail, createUser } = await import("@/services/user-service")
+    
     // Validar que el email no exista
-    const existingUser = await prisma.user.findUnique({
-      where: { email }
-    })
-
+    const existingUser = await getUserByEmail(email)
     if (existingUser) {
       throw new Error("Ya existe un usuario con este email")
     }
 
     // Crear el usuario
-    await prisma.user.create({
-      data: {
-        email,
-        name: name || null,
-        role
-      }
+    await createUser({
+      email,
+      name: name || undefined,
+      role: isSuperadmin ? "superadmin" : null
     })
 
     revalidatePath("/admin/users")

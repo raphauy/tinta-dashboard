@@ -1,6 +1,6 @@
 "use client"
 
-import { deleteUserAction, updateUserRoleAction } from "@/app/admin/users/actions"
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -8,7 +8,7 @@ import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle
+  DialogTitle,
 } from "@/components/ui/dialog"
 import {
   DropdownMenu,
@@ -18,46 +18,35 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { MoreHorizontal, Shield, Trash2, User } from "lucide-react"
-import { useSession } from "next-auth/react"
-import { useState } from "react"
+import { MoreHorizontal, Edit, Trash2, Users } from "lucide-react"
+import { deleteWorkspaceAction } from "@/app/admin/workspaces/actions"
 import { toast } from "sonner"
+import Link from "next/link"
 
-type User = {
+type Workspace = {
   id: string
-  email: string
-  name: string | null
-  role: string
+  name: string
+  slug: string
+  description: string | null
   createdAt: Date
   updatedAt: Date
+  _count: {
+    users: number
+  }
 }
 
-interface UserActionsClientProps {
-  user: User
+interface WorkspaceActionsClientProps {
+  workspace: Workspace
 }
 
-export function UserActionsClient({ user }: UserActionsClientProps) {
-  const { data: session } = useSession()
+export function WorkspaceActionsClient({ workspace }: WorkspaceActionsClientProps) {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
 
-  const handleRoleChange = async (userId: string, isSuperadmin: boolean) => {
-    try {
-      const result = await updateUserRoleAction(userId, isSuperadmin)
-      if (result.success) {
-        toast.success(result.message)
-      } else {
-        toast.error(result.error)
-      }
-    } catch {
-      toast.error("Error actualizando rol")
-    }
-  }
-
-  const handleDeleteUser = async () => {
+  const handleDeleteWorkspace = async () => {
     setIsDeleting(true)
     try {
-      const result = await deleteUserAction(user.id)
+      const result = await deleteWorkspaceAction(workspace.id)
       if (result.success) {
         toast.success(result.message)
         setShowDeleteDialog(false)
@@ -65,7 +54,7 @@ export function UserActionsClient({ user }: UserActionsClientProps) {
         toast.error(result.error)
       }
     } catch {
-      toast.error("Error eliminando usuario")
+      toast.error("Error eliminando workspace")
     } finally {
       setIsDeleting(false)
     }
@@ -83,30 +72,27 @@ export function UserActionsClient({ user }: UserActionsClientProps) {
         <DropdownMenuLabel>Acciones</DropdownMenuLabel>
         <DropdownMenuSeparator />
         
-        {/* Cambiar rol */}
-        {user.role !== "superadmin" ? (
-          <DropdownMenuItem
-            onClick={() => handleRoleChange(user.id, true)}
-          >
-            <Shield className="mr-2 h-4 w-4" />
-            Hacer Superadmin
-          </DropdownMenuItem>
-        ) : (
-          <DropdownMenuItem
-            onClick={() => handleRoleChange(user.id, false)}
-            disabled={session?.user?.id === user.id}
-          >
-            <User className="mr-2 h-4 w-4" />
-            Quitar Superadmin
-          </DropdownMenuItem>
-        )}
+        {/* Ver usuarios */}
+        <DropdownMenuItem asChild>
+          <Link href={`/admin/workspaces/${workspace.id}/users`}>
+            <Users className="mr-2 h-4 w-4" />
+            Ver Usuarios ({workspace._count.users})
+          </Link>
+        </DropdownMenuItem>
+        
+        {/* Editar workspace */}
+        <DropdownMenuItem asChild>
+          <Link href={`/admin/workspaces/${workspace.id}/edit`}>
+            <Edit className="mr-2 h-4 w-4" />
+            Editar
+          </Link>
+        </DropdownMenuItem>
         
         <DropdownMenuSeparator />
         
-        {/* Eliminar usuario */}
+        {/* Eliminar workspace */}
         <DropdownMenuItem
           onClick={() => setShowDeleteDialog(true)}
-          disabled={session?.user?.id === user.id}
           className="text-red-600 focus:text-red-600"
         >
           <Trash2 className="mr-2 h-4 w-4" />
@@ -118,9 +104,10 @@ export function UserActionsClient({ user }: UserActionsClientProps) {
       <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>¿Eliminar usuario?</DialogTitle>
+            <DialogTitle>¿Eliminar workspace?</DialogTitle>
             <DialogDescription>
-              ¿Estás seguro de que quieres eliminar este usuario? Esta acción no se puede deshacer.
+              ¿Estás seguro de que quieres eliminar el workspace <strong>{workspace.name}</strong>? 
+              Esta acción eliminará todos los datos asociados y no se puede deshacer.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
@@ -133,7 +120,7 @@ export function UserActionsClient({ user }: UserActionsClientProps) {
             </Button>
             <Button
               variant="destructive"
-              onClick={handleDeleteUser}
+              onClick={handleDeleteWorkspace}
               disabled={isDeleting}
             >
               {isDeleting ? "Eliminando..." : "Eliminar"}

@@ -40,7 +40,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           id: user.id,
           email: user.email,
           name: user.name,
-          role: user.role
+          role: user.role || "" // Usar cadena vacía para usuarios normales
         }
       }
     })
@@ -61,7 +61,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         const dbUser = await getUserForAuth(user.email!)
         
         if (dbUser) {
-          token.role = dbUser.role
+          token.role = dbUser.role || "" // Usar cadena vacía para usuarios normales
           token.id = dbUser.id
         }
       }

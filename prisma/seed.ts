@@ -1,33 +1,82 @@
-import { PrismaClient, Role } from '@prisma/client'
+import { PrismaClient, Role, WorkspaceRole } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
 async function main() {
-  // Crear usuario admin
-  const admin = await prisma.user.upsert({
+  // Crear superadmin
+  const superadmin = await prisma.user.upsert({
     where: { email: 'rapha.uy@rapha.uy' },
-    update: {},
+    update: {
+      role: Role.superadmin,
+    },
     create: {
       email: 'rapha.uy@rapha.uy',
-      name: 'Admin User',
-      role: Role.ADMIN,
+      name: 'Super Admin',
+      role: Role.superadmin,
     },
   })
 
-  console.log('Admin user created:', admin)
+  console.log('Superadmin created:', superadmin)
 
-  // Crear usuario cliente de ejemplo
-  const client = await prisma.user.upsert({
-    where: { email: 'client@example.com' },
+  // Crear workspace de ejemplo
+  const workspace = await prisma.workspace.upsert({
+    where: { slug: 'default' },
     update: {},
     create: {
-      email: 'client@example.com',
-      name: 'Client User',
-      role: Role.CLIENT,
+      name: 'Default Workspace',
+      slug: 'default',
+      description: 'Workspace por defecto del sistema',
     },
   })
 
-  console.log('Client user created:', client)
+  console.log('Default workspace created:', workspace)
+
+  // Agregar superadmin al workspace como admin
+  await prisma.workspaceUser.upsert({
+    where: {
+      userId_workspaceId: {
+        userId: superadmin.id,
+        workspaceId: workspace.id,
+      },
+    },
+    update: {},
+    create: {
+      userId: superadmin.id,
+      workspaceId: workspace.id,
+      role: WorkspaceRole.admin,
+    },
+  })
+
+  console.log('Superadmin added to default workspace')
+
+  // Crear usuario normal de ejemplo
+  const normalUser = await prisma.user.upsert({
+    where: { email: 'user@example.com' },
+    update: {},
+    create: {
+      email: 'user@example.com',
+      name: 'Usuario Normal',
+      // Sin rol de sistema - es un usuario normal
+    },
+  })
+
+  // Agregar usuario normal al workspace
+  await prisma.workspaceUser.upsert({
+    where: {
+      userId_workspaceId: {
+        userId: normalUser.id,
+        workspaceId: workspace.id,
+      },
+    },
+    update: {},
+    create: {
+      userId: normalUser.id,
+      workspaceId: workspace.id,
+      role: WorkspaceRole.member,
+    },
+  })
+
+  console.log('Normal user created and added to workspace:', normalUser)
 }
 
 main()

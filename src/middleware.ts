@@ -20,13 +20,14 @@ export async function middleware(request: NextRequest) {
   })
   
   const isLoggedIn = !!token
-  const userRole = token?.role as string
+  const userRole = token?.role as string || ""
 
   // Public routes
   if (nextUrl.pathname === "/login" || nextUrl.pathname === "/") {
     if (isLoggedIn) {
       // Redirect authenticated users to their dashboard
-      const redirectTo = userRole === "ADMIN" ? "/admin" : "/client"
+      // Superadmins go to admin, others go to workspaces (future implementation)
+      const redirectTo = userRole === "superadmin" ? "/admin" : "/workspaces"
       return NextResponse.redirect(new URL(redirectTo, nextUrl))
     }
     return NextResponse.next()
@@ -38,12 +39,15 @@ export async function middleware(request: NextRequest) {
   }
 
   // Role-based access control
-  if (nextUrl.pathname.startsWith("/admin") && userRole !== "ADMIN") {
-    return NextResponse.redirect(new URL("/client", nextUrl))
+  // Only superadmins can access /admin
+  if (nextUrl.pathname.startsWith("/admin") && userRole !== "superadmin") {
+    // For now, redirect to login until we have workspaces dashboard
+    return NextResponse.redirect(new URL("/login", nextUrl))
   }
 
-  if (nextUrl.pathname.startsWith("/client") && userRole !== "CLIENT") {
-    return NextResponse.redirect(new URL("/admin", nextUrl))
+  // Workspace routes will be handled in the future
+  if (nextUrl.pathname.startsWith("/workspaces") && !isLoggedIn) {
+    return NextResponse.redirect(new URL("/login", nextUrl))
   }
 
   return NextResponse.next()

@@ -63,14 +63,14 @@ export function UserForm() {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="role">Rol *</Label>
-          <Select name="role" defaultValue="CLIENT" required>
+          <Label htmlFor="role">Rol</Label>
+          <Select name="role" defaultValue="normal">
             <SelectTrigger>
               <SelectValue placeholder="Seleccionar rol" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="CLIENT">Cliente</SelectItem>
-              <SelectItem value="ADMIN">Administrador</SelectItem>
+              <SelectItem value="normal">Usuario Normal</SelectItem>
+              <SelectItem value="superadmin">Superadmin</SelectItem>
             </SelectContent>
           </Select>
         </div>

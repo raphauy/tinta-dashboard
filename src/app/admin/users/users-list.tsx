@@ -15,7 +15,7 @@ type User = {
   id: string
   email: string
   name: string | null
-  role: "ADMIN" | "CLIENT"
+  role: string
   createdAt: Date
   updatedAt: Date
 }
@@ -33,16 +33,16 @@ export async function UsersList() {
     }).format(new Date(date))
   }
 
-  const getRoleBadge = (role: "ADMIN" | "CLIENT") => {
-    return role === "ADMIN" ? (
+  const getRoleBadge = (role: string) => {
+    return role === "superadmin" ? (
       <Badge variant="default" className="bg-blue-100 text-blue-800 hover:bg-blue-100">
         <Shield className="w-3 h-3 mr-1" />
-        Admin
+        Superadmin
       </Badge>
     ) : (
       <Badge variant="secondary">
         <User className="w-3 h-3 mr-1" />
-        Cliente
+        Usuario
       </Badge>
     )
   }

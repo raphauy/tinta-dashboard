@@ -14,12 +14,15 @@ model User {
   id        String   @id @default(cuid())
   email     String   @unique
   name      String?
-  role      Role     @default(CLIENT)
+  role      Role?    // Nullable - solo superadmins tienen rol
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   
   // Relación con tokens OTP
   otpTokens OtpToken[]
+  
+  // Relación con workspaces
+  workspaces WorkspaceUser[]
   
   @@map("users")
 }
@@ -38,7 +41,42 @@ model OtpToken {
   @@map("otp_tokens")
 }
 
+model Workspace {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  description String?
+  settings    Json?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relación con usuarios
+  users WorkspaceUser[]
+  
+  @@map("workspaces")
+}
+
+model WorkspaceUser {
+  id          String        @id @default(cuid())
+  userId      String
+  workspaceId String
+  role        WorkspaceRole @default(member)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  
+  // Relaciones
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  
+  @@unique([userId, workspaceId])
+  @@map("workspace_users")
+}
+
 enum Role {
-  ADMIN
-  CLIENT
+  superadmin // Super admin del sistema
+}
+
+enum WorkspaceRole {
+  admin  // Admin del workspace
+  member // Miembro del workspace
 }
