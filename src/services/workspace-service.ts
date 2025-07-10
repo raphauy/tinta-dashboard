@@ -86,8 +86,33 @@ export async function getAllWorkspaces(): Promise<WorkspaceWithUsers[]> {
 
 /**
  * Obtiene los workspaces de un usuario
+ * Si es superadmin, devuelve todos los workspaces
  */
 export async function getUserWorkspaces(userId: string): Promise<(WorkspaceUser & { workspace: Workspace })[]> {
+  // Verificar si el usuario es superadmin
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { role: true }
+  })
+
+  if (user?.role === "superadmin") {
+    // Superadmin tiene acceso a todos los workspaces
+    const allWorkspaces = await prisma.workspace.findMany({
+      orderBy: { createdAt: 'desc' }
+    })
+    
+    // Convertir a formato compatible con WorkspaceUser
+    return allWorkspaces.map(workspace => ({
+      id: `superadmin-${workspace.id}`,
+      userId,
+      workspaceId: workspace.id,
+      role: WorkspaceRole.admin, // Superadmin siempre es admin
+      createdAt: workspace.createdAt,
+      updatedAt: workspace.updatedAt,
+      workspace
+    }))
+  }
+
   return await prisma.workspaceUser.findMany({
     where: { userId },
     include: {
@@ -198,8 +223,19 @@ export async function updateUserWorkspaceRole(
 
 /**
  * Verifica si un usuario pertenece a un workspace
+ * Superadmins siempre tienen acceso
  */
 export async function isUserInWorkspace(userId: string, workspaceId: string): Promise<boolean> {
+  // Verificar si el usuario es superadmin
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { role: true }
+  })
+
+  if (user?.role === "superadmin") {
+    return true // Superadmin siempre tiene acceso
+  }
+
   const workspaceUser = await prisma.workspaceUser.findUnique({
     where: {
       userId_workspaceId: {
@@ -214,8 +250,19 @@ export async function isUserInWorkspace(userId: string, workspaceId: string): Pr
 
 /**
  * Verifica si un usuario es admin de un workspace
+ * Superadmins siempre son admin
  */
 export async function isUserWorkspaceAdmin(userId: string, workspaceId: string): Promise<boolean> {
+  // Verificar si el usuario es superadmin
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { role: true }
+  })
+
+  if (user?.role === "superadmin") {
+    return true // Superadmin siempre es admin de todos los workspaces
+  }
+
   const workspaceUser = await prisma.workspaceUser.findUnique({
     where: {
       userId_workspaceId: {

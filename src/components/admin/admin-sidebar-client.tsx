@@ -23,6 +23,7 @@ import {
   Users,
   Building2,
   Settings,
+  ExternalLink,
 } from "lucide-react"
 import Image from "next/image"
 
@@ -109,6 +110,26 @@ export function AdminSidebarClient({ children, userCount, workspaceCount }: Admi
                     </SidebarMenuItem>
                   )
                 })}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+
+          {/* Acceso Rápido para Superadmin */}
+          <SidebarGroup className="mt-auto">
+            <SidebarGroupLabel>Acceso Rápido</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                <SidebarMenuItem>
+                  <SidebarMenuButton
+                    asChild
+                    tooltip="Ver Todos los Workspaces"
+                  >
+                    <Link href="/w" className="text-blue-600 hover:text-blue-800">
+                      <ExternalLink />
+                      <span>Todos los Workspaces</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
               </SidebarMenu>
             </SidebarGroupContent>
           </SidebarGroup>

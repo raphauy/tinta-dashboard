@@ -1,16 +1,27 @@
 import { auth } from "@/lib/auth"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { ExternalLink } from "lucide-react"
+import Link from "next/link"
 
 export default async function AdminDashboard() {
   const session = await auth()
 
   return (
     <div className="space-y-6">
-      <div>
-        <h2 className="text-3xl font-bold tracking-tight">Panel de Administración</h2>
-        <p className="text-muted-foreground">
-          Resumen de tu aplicación
-        </p>
+      <div className="flex justify-between items-start">
+        <div>
+          <h2 className="text-3xl font-bold tracking-tight">Panel de Administración</h2>
+          <p className="text-muted-foreground">
+            Resumen de tu aplicación
+          </p>
+        </div>
+        <Button asChild variant="outline">
+          <Link href="/w">
+            <ExternalLink className="h-4 w-4 mr-2" />
+            Ver Todos los Workspaces
+          </Link>
+        </Button>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
