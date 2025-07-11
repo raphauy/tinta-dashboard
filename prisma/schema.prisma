@@ -29,6 +29,10 @@ model User {
   // Relación con invitaciones enviadas
   invitations WorkspaceInvitation[]
   
+  // Relación con formularios y plantillas
+  formTemplates FormTemplate[] // Plantillas creadas
+  forms         Form[]          // Formularios creados
+  
   @@map("users")
 }
 
@@ -60,6 +64,9 @@ model Workspace {
   
   // Relación con invitaciones
   invitations WorkspaceInvitation[]
+  
+  // Relación con formularios
+  forms Form[] // Formularios del workspace
   
   @@map("workspaces")
 }
@@ -107,4 +114,88 @@ model WorkspaceInvitation {
   @@index([email])
   @@index([token])
   @@map("workspace_invitations")
+}
+
+// Nuevos modelos para el Form Builder
+
+model FormTemplate {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  fields      Json     // Estructura de campos serializada
+  isGlobal    Boolean  @default(true) // Todas las plantillas son globales
+  createdById String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relaciones
+  createdBy User @relation(fields: [createdById], references: [id])
+  forms     Form[] // Formularios creados desde esta plantilla
+  
+  @@map("form_templates")
+}
+
+model Form {
+  id           String        @id @default(cuid())
+  name         String
+  description  String?
+  fields       Json          // Estructura de campos personalizada
+  workspaceId  String
+  templateId   String?       // Plantilla de origen (opcional)
+  shareToken   String        @unique // Token para enlace público
+  isActive     Boolean       @default(true)
+  allowEdits   Boolean       @default(false) // Permitir ediciones múltiples
+  createdById  String
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  
+  // Relaciones
+  workspace   Workspace     @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  template    FormTemplate? @relation(fields: [templateId], references: [id])
+  createdBy   User          @relation(fields: [createdById], references: [id])
+  responses   FormResponse[]
+  
+  @@index([shareToken])
+  @@index([workspaceId])
+  @@map("forms")
+}
+
+model FormResponse {
+  id          String            @id @default(cuid())
+  formId      String
+  data        Json              // Respuestas serializadas
+  status      ResponseStatus    @default(new)
+  submittedAt DateTime          @default(now())
+  submitterIP String?           // IP del usuario (opcional)
+  
+  // Relaciones
+  form  Form @relation(fields: [formId], references: [id], onDelete: Cascade)
+  files FormResponseFile[]
+  
+  @@index([formId])
+  @@index([status])
+  @@map("form_responses")
+}
+
+model FormResponseFile {
+  id         String @id @default(cuid())
+  responseId String
+  fieldName  String // Nombre del campo que subió el archivo
+  fileName   String // Nombre original del archivo
+  fileUrl    String // URL en Vercel Blob
+  fileSize   Int    // Tamaño en bytes
+  fileType   String // MIME type
+  uploadedAt DateTime @default(now())
+  
+  // Relaciones
+  response FormResponse @relation(fields: [responseId], references: [id], onDelete: Cascade)
+  
+  @@index([responseId])
+  @@map("form_response_files")
+}
+
+enum ResponseStatus {
+  new
+  reviewed
+  processed
 }
