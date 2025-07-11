@@ -15,7 +15,7 @@ export function WorkspaceCard({ workspace, userRole, isSuperadmin = false }: Wor
   const getRoleBadge = (role: WorkspaceRole, isSuperadmin: boolean) => {
     if (isSuperadmin) {
       return (
-        <Badge variant="default" className="bg-purple-100 text-purple-800 hover:bg-purple-100">
+        <Badge variant="default" className="bg-purple-100 text-purple-800 hover:bg-purple-100 dark:bg-purple-900 dark:text-purple-100">
           <Shield className="w-3 h-3 mr-1" />
           Superadmin
         </Badge>
@@ -23,7 +23,7 @@ export function WorkspaceCard({ workspace, userRole, isSuperadmin = false }: Wor
     }
     
     return role === WorkspaceRole.admin ? (
-      <Badge variant="default" className="bg-blue-100 text-blue-800 hover:bg-blue-100">
+      <Badge variant="default" className="bg-blue-100 text-blue-800 hover:bg-blue-100 dark:bg-blue-900 dark:text-blue-100">
         Admin
       </Badge>
     ) : (
@@ -38,25 +38,25 @@ export function WorkspaceCard({ workspace, userRole, isSuperadmin = false }: Wor
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between">
           <div className="flex items-center space-x-2">
-            <Building2 className="h-5 w-5 text-gray-600" />
+            <Building2 className="h-5 w-5 text-muted-foreground" />
             <CardTitle className="text-lg">{workspace.name}</CardTitle>
           </div>
           {getRoleBadge(userRole, isSuperadmin)}
         </div>
         {workspace.description && (
-          <p className="text-sm text-gray-600 mt-2">
+          <p className="text-sm text-muted-foreground mt-2">
             {workspace.description}
           </p>
         )}
       </CardHeader>
       
       <CardContent>
-        <div className="flex items-center space-x-4 text-sm text-gray-600">
+        <div className="flex items-center space-x-4 text-sm text-muted-foreground">
           <div className="flex items-center space-x-1">
             <Users className="h-4 w-4" />
             <span>Workspace</span>
           </div>
-          <div className="text-gray-400">
+          <div className="text-muted-foreground/60">
             /{workspace.slug}
           </div>
         </div>

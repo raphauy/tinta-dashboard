@@ -12,6 +12,7 @@ import {
 import { LogOut, Settings, User } from "lucide-react"
 import { signOut } from "next-auth/react"
 import Link from "next/link"
+import { ThemeToggle } from "@/components/theme-toggle"
 
 interface WorkspaceHeaderProps {
   user: {
@@ -37,12 +38,12 @@ export function WorkspaceHeader({ user }: WorkspaceHeaderProps) {
   }
 
   return (
-    <header className="border-b bg-white">
+    <header className="border-b bg-background">
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
           {/* Logo/Brand */}
           <div className="flex items-center space-x-4">
-            <Link href="/w" className="text-xl font-bold text-gray-900">
+            <Link href="/w" className="text-xl font-bold">
               RC Starter Kit
             </Link>
           </div>
@@ -51,7 +52,7 @@ export function WorkspaceHeader({ user }: WorkspaceHeaderProps) {
           <nav className="hidden md:flex items-center space-x-6">
             <Link 
               href="/w" 
-              className="text-gray-600 hover:text-gray-900 transition-colors"
+              className="text-muted-foreground hover:text-foreground transition-colors"
             >
               {user.role === "superadmin" ? "Todos los Workspaces" : "Mis Workspaces"}
             </Link>
@@ -65,8 +66,12 @@ export function WorkspaceHeader({ user }: WorkspaceHeaderProps) {
             )}
           </nav>
 
-          {/* User Menu */}
-          <DropdownMenu>
+          {/* Actions */}
+          <div className="flex items-center space-x-2">
+            <ThemeToggle />
+            
+            {/* User Menu */}
+            <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="relative h-8 w-8 rounded-full">
                 <Avatar className="h-8 w-8">
@@ -120,6 +125,7 @@ export function WorkspaceHeader({ user }: WorkspaceHeaderProps) {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+          </div>
         </div>
       </div>
     </header>

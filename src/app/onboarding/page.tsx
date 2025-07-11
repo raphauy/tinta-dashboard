@@ -21,10 +21,10 @@ export default async function OnboardingPage({ searchParams }: OnboardingPagePro
   const workspaceSlug = params.workspace
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-background to-accent/20 flex items-center justify-center p-4">
       <Card className="w-full max-w-lg">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold text-gray-900">
+          <CardTitle className="text-2xl font-bold">
             ¡Bienvenido!
           </CardTitle>
           <CardDescription>

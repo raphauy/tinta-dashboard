@@ -39,18 +39,18 @@ export default async function WorkspaceLayout({
   return (
     <div className="space-y-6">
       {/* Workspace Header */}
-      <div className="bg-white border rounded-lg p-6">
+      <div className="bg-card border rounded-lg p-6">
         <div className="flex items-start justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">
+            <h1 className="text-2xl font-bold">
               {workspace.name}
             </h1>
             {workspace.description && (
-              <p className="text-gray-600 mt-1">
+              <p className="text-muted-foreground mt-1">
                 {workspace.description}
               </p>
             )}
-            <p className="text-sm text-gray-500 mt-2">
+            <p className="text-sm text-muted-foreground mt-2">
               /{workspace.slug}
             </p>
           </div>

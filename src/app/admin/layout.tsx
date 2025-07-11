@@ -1,5 +1,5 @@
-import { AdminSidebar } from "@/components/admin/admin-sidebar"
-import { AdminHeader } from "@/components/admin/admin-header"
+import { AdminSidebar } from "./components/admin-sidebar"
+import { AdminHeader } from "./components/admin-header"
 import { SessionProvider } from "next-auth/react"
 
 export default function AdminLayout({

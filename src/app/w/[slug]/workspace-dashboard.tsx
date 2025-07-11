@@ -67,7 +67,7 @@ export async function WorkspaceDashboard({ slug }: WorkspaceDashboardProps) {
           <CardContent>
             <div className="text-2xl font-bold">
               {currentUserWorkspace?.role === "admin" ? (
-                <Badge variant="default" className="bg-blue-100 text-blue-800">
+                <Badge variant="default" className="bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-100">
                   Admin
                 </Badge>
               ) : (
@@ -93,8 +93,8 @@ export async function WorkspaceDashboard({ slug }: WorkspaceDashboardProps) {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            <div className="text-center py-8 text-gray-500">
-              <Calendar className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+            <div className="text-center py-8 text-muted-foreground">
+              <Calendar className="h-12 w-12 mx-auto mb-4 text-muted-foreground/30" />
               <p>No hay actividad reciente</p>
               <p className="text-sm">
                 La actividad del workspace aparecerá aquí cuando haya actualizaciones
@@ -113,12 +113,12 @@ export async function WorkspaceDashboard({ slug }: WorkspaceDashboardProps) {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="p-4 border rounded-lg">
               <h3 className="font-medium mb-2">Gestión de Miembros</h3>
-              <p className="text-sm text-gray-600 mb-3">
+              <p className="text-sm text-muted-foreground mb-3">
                 Administra los usuarios del workspace
               </p>
               <a 
                 href={`/w/${slug}/members`}
-                className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                className="text-primary hover:text-primary/80 text-sm font-medium"
               >
                 Ver miembros →
               </a>
@@ -126,12 +126,12 @@ export async function WorkspaceDashboard({ slug }: WorkspaceDashboardProps) {
             {currentUserWorkspace?.role === "admin" && (
               <div className="p-4 border rounded-lg">
                 <h3 className="font-medium mb-2">Configuración</h3>
-                <p className="text-sm text-gray-600 mb-3">
+                <p className="text-sm text-muted-foreground mb-3">
                   Ajusta la configuración del workspace
                 </p>
                 <a 
                   href={`/w/${slug}/settings`}
-                  className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                  className="text-primary hover:text-primary/80 text-sm font-medium"
                 >
                   Configurar →
                 </a>

@@ -16,14 +16,14 @@ export async function WorkspaceList() {
     return (
       <div className="text-center py-12">
         <div className="mx-auto max-w-md">
-          <h3 className="text-lg font-medium text-gray-900 mb-2">
+          <h3 className="text-lg font-medium mb-2">
             No tienes workspaces
           </h3>
-          <p className="text-gray-600 mb-6">
+          <p className="text-muted-foreground mb-6">
             Ponte en contacto con un administrador para que te invite a un workspace
           </p>
           <div className="space-y-4">
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-muted-foreground">
               O si eres administrador del sistema, puedes crear workspaces desde el panel de administración
             </p>
           </div>
@@ -35,13 +35,13 @@ export async function WorkspaceList() {
   return (
     <div className="space-y-6">
       {/* Stats */}
-      <div className="bg-white rounded-lg border p-6">
+      <div className="bg-card rounded-lg border p-6">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-lg font-medium text-gray-900">
+            <h2 className="text-lg font-medium">
               Workspaces Disponibles
             </h2>
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-muted-foreground">
               Tienes acceso a {userWorkspaces.length} workspace{userWorkspaces.length !== 1 ? 's' : ''}
             </p>
           </div>

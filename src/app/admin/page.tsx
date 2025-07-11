@@ -1,11 +1,13 @@
 import { auth } from "@/lib/auth"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { ExternalLink } from "lucide-react"
+import { ExternalLink, Users, Building2, Mail, UserCheck, Shield, Plus } from "lucide-react"
 import Link from "next/link"
+import { getAdminDashboardMetrics } from "@/services/dashboard-service"
 
 export default async function AdminDashboard() {
   const session = await auth()
+  const metrics = await getAdminDashboardMetrics()
 
   return (
     <div className="space-y-6">
@@ -30,11 +32,12 @@ export default async function AdminDashboard() {
             <CardTitle className="text-sm font-medium">
               Total de Usuarios
             </CardTitle>
+            <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">2</div>
+            <div className="text-2xl font-bold">{metrics.totalUsers}</div>
             <p className="text-xs text-muted-foreground">
-              Usuarios activos en el sistema
+              Usuarios registrados en el sistema
             </p>
           </CardContent>
         </Card>
@@ -42,13 +45,14 @@ export default async function AdminDashboard() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
-              Usuarios Admin
+              Total de Workspaces
             </CardTitle>
+            <Building2 className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">1</div>
+            <div className="text-2xl font-bold">{metrics.totalWorkspaces}</div>
             <p className="text-xs text-muted-foreground">
-              Administradores
+              Workspaces creados
             </p>
           </CardContent>
         </Card>
@@ -56,13 +60,14 @@ export default async function AdminDashboard() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
-              Usuarios Cliente
+              Invitaciones Pendientes
             </CardTitle>
+            <Mail className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">1</div>
+            <div className="text-2xl font-bold">{metrics.pendingInvitations}</div>
             <p className="text-xs text-muted-foreground">
-              Usuarios regulares
+              Invitaciones sin aceptar
             </p>
           </CardContent>
         </Card>
@@ -70,39 +75,88 @@ export default async function AdminDashboard() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
-              Estado del Sistema
+              Usuarios Activos
             </CardTitle>
+            <UserCheck className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-600">En línea</div>
+            <div className="text-2xl font-bold">{metrics.activeUsers}</div>
             <p className="text-xs text-muted-foreground">
-              Todos los sistemas operativos
+              Han completado onboarding
             </p>
           </CardContent>
         </Card>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Información de Sesión</CardTitle>
-          <CardDescription>
-            Detalles de la sesión actual del usuario
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-2">
-            <div>
-              <span className="font-medium">Email:</span> {session?.user?.email}
+      <div className="grid gap-6 md:grid-cols-2">
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center space-x-2">
+              <Shield className="h-5 w-5" />
+              <span>Información de Sesión</span>
+            </CardTitle>
+            <CardDescription>
+              Detalles de la sesión actual del usuario
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium text-muted-foreground">Email:</span>
+                <span className="text-sm">{session?.user?.email}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium text-muted-foreground">Rol:</span>
+                <span className="text-sm capitalize">{session?.user?.role}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium text-muted-foreground">ID de Usuario:</span>
+                <span className="text-sm font-mono text-xs">{session?.user?.id}</span>
+              </div>
             </div>
-            <div>
-              <span className="font-medium">Rol:</span> {session?.user?.role}
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center space-x-2">
+              <Plus className="h-5 w-5" />
+              <span>Acciones Rápidas</span>
+            </CardTitle>
+            <CardDescription>
+              Acceso directo a funciones principales
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid gap-2">
+              <Button asChild variant="outline" className="w-full justify-start">
+                <Link href="/admin/users/new">
+                  <Users className="h-4 w-4 mr-2" />
+                  Crear Usuario
+                </Link>
+              </Button>
+              <Button asChild variant="outline" className="w-full justify-start">
+                <Link href="/admin/workspaces/new">
+                  <Building2 className="h-4 w-4 mr-2" />
+                  Crear Workspace
+                </Link>
+              </Button>
+              <Button asChild variant="outline" className="w-full justify-start">
+                <Link href="/admin/users">
+                  <Users className="h-4 w-4 mr-2" />
+                  Gestionar Usuarios
+                </Link>
+              </Button>
+              <Button asChild variant="outline" className="w-full justify-start">
+                <Link href="/admin/workspaces">
+                  <Building2 className="h-4 w-4 mr-2" />
+                  Gestionar Workspaces
+                </Link>
+              </Button>
             </div>
-            <div>
-              <span className="font-medium">ID de Usuario:</span> {session?.user?.id}
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   )
 }

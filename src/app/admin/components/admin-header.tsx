@@ -13,8 +13,9 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { LogOut, User } from "lucide-react"
-import { logoutAction } from "@/app/admin/actions"
+import { logoutAction } from "../actions"
 import Link from "next/link"
+import { ThemeToggle } from "@/components/theme-toggle"
 
 export function AdminHeader() {
   const { data: session } = useSession()
@@ -36,12 +37,13 @@ export function AdminHeader() {
         <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
               <div>
-                <h1 className="text-2xl font-bold text-gray-900">Panel de Control</h1>
-                <p className="text-sm text-gray-500">Bienvenido de nuevo, {session?.user?.name || session?.user?.email}</p>
+                <h1 className="text-2xl font-bold">Panel de Control</h1>
+                <p className="text-sm text-muted-foreground">Bienvenido de nuevo, {session?.user?.name || session?.user?.email}</p>
               </div>
             </div>
 
             <div className="flex items-center space-x-4">
+              <ThemeToggle />
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="h-10 w-10 rounded-full">
@@ -65,7 +67,7 @@ export function AdminHeader() {
                       <p className="text-sm font-medium">
                         {session?.user?.name || 'Usuario Admin'}
                       </p>
-                      <p className="text-xs text-gray-500">
+                      <p className="text-xs text-muted-foreground">
                         {session?.user?.email}
                       </p>
                     </div>

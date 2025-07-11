@@ -38,7 +38,7 @@ export function WorkspaceNav({ workspaceSlug, isAdmin }: WorkspaceNavProps) {
   ].filter(item => isAdmin || item.showForMembers)
 
   return (
-    <nav className="bg-white border rounded-lg p-4">
+    <nav className="bg-card border rounded-lg p-4">
       <div className="flex space-x-1">
         {navItems.map((item) => {
           const Icon = item.icon
