@@ -6,6 +6,8 @@ export interface AdminDashboardMetrics {
   pendingInvitations: number
   activeUsers: number
   adminUsers: number
+  totalTemplates: number
+  totalForms: number
 }
 
 /**
@@ -17,7 +19,9 @@ export async function getAdminDashboardMetrics(): Promise<AdminDashboardMetrics>
     totalWorkspaces,
     pendingInvitations,
     activeUsers,
-    adminUsers
+    adminUsers,
+    totalTemplates,
+    totalForms
   ] = await Promise.all([
     // Total de usuarios
     prisma.user.count(),
@@ -56,7 +60,13 @@ export async function getAdminDashboardMetrics(): Promise<AdminDashboardMetrics>
           }
         ]
       }
-    })
+    }),
+    
+    // Total de plantillas de formularios
+    prisma.formTemplate.count(),
+    
+    // Total de formularios
+    prisma.form.count()
   ])
 
   return {
@@ -64,6 +74,8 @@ export async function getAdminDashboardMetrics(): Promise<AdminDashboardMetrics>
     totalWorkspaces,
     pendingInvitations,
     activeUsers,
-    adminUsers
+    adminUsers,
+    totalTemplates,
+    totalForms
   }
 }

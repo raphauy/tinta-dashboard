@@ -1,7 +1,7 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { BarChart3, Settings, Users } from "lucide-react"
+import { BarChart3, Settings, Users, FileText } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 
@@ -20,6 +20,13 @@ export function WorkspaceNav({ workspaceSlug, isAdmin }: WorkspaceNavProps) {
       icon: BarChart3,
       isActive: pathname === `/w/${workspaceSlug}`,
       showForMembers: true, // Todos pueden ver el dashboard
+    },
+    {
+      label: "Formularios",
+      href: `/w/${workspaceSlug}/forms`,
+      icon: FileText,
+      isActive: pathname.startsWith(`/w/${workspaceSlug}/forms`),
+      showForMembers: true, // Todos pueden ver formularios
     },
     {
       label: "Miembros",
