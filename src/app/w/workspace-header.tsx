@@ -12,6 +12,7 @@ import {
 import { LogOut, Settings, User } from "lucide-react"
 import { signOut } from "next-auth/react"
 import Link from "next/link"
+import Image from "next/image"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { WorkspaceSelector } from "@/components/workspace-selector"
 import type { Workspace } from "@prisma/client"
@@ -46,31 +47,42 @@ export function WorkspaceHeader({ user, userWorkspaces }: WorkspaceHeaderProps) 
     <header className="border-b bg-background">
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
-          {/* Logo/Brand */}
-          <div className="flex items-center space-x-4">
-            <Link href="/w" className="text-xl font-bold">
-              RC Starter Kit
-            </Link>
-          </div>
-
-          {/* Centro - Workspace Selector o Navigation */}
-          <div className="flex-1 flex justify-center">
-            {userWorkspaces && userWorkspaces.length > 0 ? (
-              <WorkspaceSelector
-                userWorkspaces={userWorkspaces}
+          {/* Logo + Workspace Selector (estilo Neon) */}
+          <div className="flex items-center space-x-3">
+            {/* Logo de Tinta */}
+            <Link href="/w" className="flex items-center">
+              <Image
+                src="/tinta-logo.ico"
+                alt="Tinta Agency"
+                width={32}
+                height={32}
+                className="object-contain"
               />
-            ) : (
-              <nav className="hidden md:flex items-center space-x-6">
+            </Link>
+            
+            {/* Separador */}
+            {userWorkspaces && userWorkspaces.length > 0 && (
+              <>
+                <span className="text-muted-foreground text-sm">/</span>
+                <WorkspaceSelector
+                  userWorkspaces={userWorkspaces}
+                />
+              </>
+            )}
+            
+            {/* Navegación cuando no hay workspaces */}
+            {(!userWorkspaces || userWorkspaces.length === 0) && (
+              <nav className="hidden md:flex items-center space-x-6 ml-3">
                 <Link 
                   href="/w" 
-                  className="text-muted-foreground hover:text-foreground transition-colors"
+                  className="text-muted-foreground hover:text-foreground transition-colors text-sm"
                 >
                   {user.role === "superadmin" ? "Todos los Workspaces" : "Mis Workspaces"}
                 </Link>
                 {user.role === "superadmin" && (
                   <Link 
                     href="/admin" 
-                    className="text-blue-600 hover:text-blue-800 transition-colors font-medium"
+                    className="text-blue-600 hover:text-blue-800 transition-colors font-medium text-sm"
                   >
                     Panel Admin
                   </Link>

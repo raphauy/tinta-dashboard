@@ -58,63 +58,39 @@ export function WorkspaceSelector({
     router.push(`/w/${workspaceSlug}`)
   }
 
-  const handleCurrentWorkspaceClick = () => {
-    if (currentWorkspace) {
-      router.push(`/w/${currentWorkspace.slug}`)
-    }
-  }
-
   return (
     <div className="flex items-center">
-      {/* Botón principal - navega al workspace actual */}
-      <Button
-        variant="ghost"
-        onClick={handleCurrentWorkspaceClick}
-        disabled={!currentWorkspace}
-        className="flex items-center space-x-3 px-3 py-2 h-auto justify-start flex-1 hover:bg-muted/50"
-      >
-        {currentWorkspace ? (
-          <>
-            <WorkspaceAvatar 
-              workspace={currentWorkspace}
-              size="md"
-            />
-            <div className="flex flex-col items-start">
-              <span className="font-medium text-sm truncate max-w-[180px]">
-                {currentWorkspace.name}
-              </span>
-              <span className="text-xs text-muted-foreground">
-                /{currentWorkspace.slug}
-              </span>
-            </div>
-          </>
-        ) : (
-          <>
-            <WorkspaceAvatar 
-              workspace={{ name: "Workspace", image: null }}
-              size="md"
-            />
-            <span className="font-medium text-sm text-muted-foreground">
-              Seleccionar workspace
-            </span>
-          </>
-        )}
-      </Button>
-
-      {/* Separator visual */}
-      <div className="w-px h-8 bg-border mx-1" />
-
-      {/* Dropdown selector */}
+      {/* Dropdown selector integrado */}
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button
             variant="ghost"
-            size="sm"
             role="combobox"
             aria-expanded={open}
-            className="w-auto px-2 hover:bg-muted/50"
+            className="flex items-center space-x-2 px-2 py-1 h-auto hover:bg-muted/50"
           >
-            <ChevronsUpDown className="h-4 w-4 text-muted-foreground" />
+            {currentWorkspace ? (
+              <>
+                <WorkspaceAvatar 
+                  workspace={currentWorkspace}
+                  size="sm"
+                />
+                <span className="font-medium text-sm truncate max-w-[150px]">
+                  {currentWorkspace.name}
+                </span>
+              </>
+            ) : (
+              <>
+                <WorkspaceAvatar 
+                  workspace={{ name: "Workspace", image: null }}
+                  size="sm"
+                />
+                <span className="font-medium text-sm text-muted-foreground">
+                  Seleccionar workspace
+                </span>
+              </>
+            )}
+            <ChevronsUpDown className="h-3 w-3 text-muted-foreground ml-1" />
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-80 p-0" align="start">
