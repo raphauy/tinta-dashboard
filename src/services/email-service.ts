@@ -32,13 +32,12 @@ export async function sendWorkspaceInvitationEmail(input: SendInvitationEmailInp
     const { data, error } = await resend.emails.send({
       from: `${appName} <${fromEmail}>`,
       to: [validatedInput.to],
-      subject: `Invitación a "${validatedInput.workspaceName}" en ${appName}`,
+      subject: `Invitación a "${validatedInput.workspaceName}" en Tinta Agency`,
       react: WorkspaceInvitationEmail({
         invitedUserEmail: validatedInput.to,
         inviterName: validatedInput.inviterName,
         workspaceName: validatedInput.workspaceName,
         acceptUrl: validatedInput.acceptUrl,
-        appName,
         expiresInDays: validatedInput.expiresInDays
       }),
     })
@@ -126,8 +125,7 @@ export async function sendFormSubmissionNotification(input: SendFormSubmissionNo
           submittedAt: validatedInput.submittedAt,
           fieldsCount: validatedInput.fieldsCount,
           filesCount: validatedInput.filesCount,
-          viewUrl,
-          appName
+          viewUrl
         }),
       })
       
@@ -197,10 +195,9 @@ export async function sendOtpEmail(input: SendOtpEmailInput) {
     const { data, error } = await resend.emails.send({
       from: `${appName} <${fromEmail}>`,
       to: [validatedInput.to],
-      subject: `Tu código de verificación de ${appName}`,
+      subject: `Tu código de verificación de Tinta Agency`,
       react: OtpEmail({
-        otp: validatedInput.otp,
-        appName
+        otp: validatedInput.otp
       }),
     })
     

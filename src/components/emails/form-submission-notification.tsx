@@ -19,7 +19,6 @@ interface FormSubmissionNotificationProps {
   fieldsCount?: number
   filesCount?: number
   viewUrl?: string
-  appName?: string
 }
 
 export default function FormSubmissionNotification({
@@ -29,8 +28,7 @@ export default function FormSubmissionNotification({
   submittedAt = "Hoy a las 14:30",
   fieldsCount = 5,
   filesCount = 2,
-  viewUrl = "https://dashboard.tinta.wine/w/workspace/forms/form-id/responses/response-id",
-  appName = "Tinta Agency"
+  viewUrl = "https://dashboard.tinta.wine/w/workspace/forms/form-id/responses/response-id"
 }: FormSubmissionNotificationProps) {
   return (
     <Html>
@@ -44,9 +42,9 @@ export default function FormSubmissionNotification({
             <Section className="bg-white border border-gray-300 rounded-lg overflow-hidden shadow-sm">
               {/* Header with Tinta branding */}
               <Section 
-                className="bg-gradient-to-r from-purple-600 to-pink-600 text-white text-center py-4" 
+                className="text-white text-center py-4" 
                 style={{
-                  background: 'linear-gradient(to right, #7c3aed, #db2777)', 
+                  background: '#143F3B', 
                   color: '#ffffff', 
                   textAlign: 'center', 
                   padding: '16px 0'
@@ -57,13 +55,13 @@ export default function FormSubmissionNotification({
                     className="text-lg font-bold m-0 text-white" 
                     style={{color: '#ffffff', margin: 0}}
                   >
-                    🍷 {appName}
+                    Tinta Agency
                   </Heading>
                   <Text 
                     className="text-white mt-1 mb-0 text-sm opacity-90" 
                     style={{color: '#ffffff', fontSize: '14px', margin: '4px 0 0 0'}}
                   >
-                    Nueva Respuesta de Formulario
+                    Embajadores de la cultura del vino
                   </Text>
                 </Container>
               </Section>
@@ -85,7 +83,16 @@ export default function FormSubmissionNotification({
                 </Text>
 
                 {/* Form details */}
-                <Section className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-4">
+                <Section 
+                  className="rounded-lg p-4 mb-4"
+                  style={{
+                    backgroundColor: '#EBEBEB',
+                    border: '1px solid #d1d5db',
+                    borderRadius: '8px',
+                    padding: '16px',
+                    marginBottom: '16px'
+                  }}
+                >
                   <Text className="text-gray-800 text-sm font-medium mb-2 mt-0">
                     📊 Detalles de la respuesta:
                   </Text>
@@ -109,17 +116,29 @@ export default function FormSubmissionNotification({
                 </Section>
 
                 <Text className="text-gray-600 mb-4 leading-6 text-sm">
-                  Esta respuesta ha sido marcada como <span className="bg-green-100 text-green-800 px-2 py-1 rounded text-xs font-medium">nueva</span> y 
-                  está esperando tu revisión.
+                  Esta respuesta ha sido marcada como{" "}
+                  <span 
+                    style={{
+                      backgroundColor: '#DDBBC0',
+                      color: '#2E2E2E',
+                      padding: '2px 8px',
+                      borderRadius: '4px',
+                      fontSize: '12px',
+                      fontWeight: '500'
+                    }}
+                  >
+                    nueva
+                  </span>{" "}
+                  y está esperando tu revisión.
                 </Text>
 
                 {/* Call to action button */}
                 <Section className="text-center mb-6">
                   <Button
                     href={viewUrl}
-                    className="bg-purple-600 text-white font-semibold py-3 px-6 rounded-lg text-base inline-block no-underline"
+                    className="text-white font-semibold py-3 px-6 rounded-lg text-base inline-block no-underline"
                     style={{
-                      backgroundColor: '#7c3aed',
+                      backgroundColor: '#143F3B',
                       color: '#ffffff',
                       fontWeight: '600',
                       padding: '12px 24px',
@@ -136,15 +155,39 @@ export default function FormSubmissionNotification({
                   Si el botón no funciona, copia y pega el siguiente enlace en tu navegador:
                 </Text>
 
-                <Section className="bg-gray-50 border border-gray-200 rounded-lg p-3 mb-4">
-                  <Text className="text-purple-600 text-xs m-0 word-break-all font-mono">
+                <Section 
+                  className="rounded-lg p-3 mb-4"
+                  style={{
+                    backgroundColor: '#EBEBEB',
+                    border: '1px solid #d1d5db',
+                    borderRadius: '8px',
+                    padding: '12px',
+                    marginBottom: '16px'
+                  }}
+                >
+                  <Text 
+                    className="text-xs m-0 word-break-all font-mono"
+                    style={{color: '#143F3B', fontSize: '12px', margin: 0, fontFamily: 'monospace'}}
+                  >
                     {viewUrl}
                   </Text>
                 </Section>
 
                 {/* Next steps */}
-                <Section className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
-                  <Text className="text-blue-800 text-xs m-0 font-medium">
+                <Section 
+                  className="rounded-lg p-3 mb-4"
+                  style={{
+                    backgroundColor: '#E2E369',
+                    border: '1px solid #AE8928',
+                    borderRadius: '8px',
+                    padding: '12px',
+                    marginBottom: '16px'
+                  }}
+                >
+                  <Text 
+                    className="text-xs m-0 font-medium"
+                    style={{color: '#2E2E2E', fontSize: '12px', margin: 0, fontWeight: '500'}}
+                  >
                     💡 <strong>Próximos pasos:</strong> Revisa la respuesta, descarga los archivos si es necesario 
                     y marca como &ldquo;revisado&rdquo; cuando hayas completado tu análisis.
                   </Text>
@@ -157,12 +200,25 @@ export default function FormSubmissionNotification({
               </Section>
 
               {/* Footer */}
-              <Section className="bg-gray-50 px-4 py-3 border-t border-gray-200">
-                <Text className="text-gray-500 text-xs text-center m-0">
-                  Esta notificación fue enviada porque eres miembro del workspace &ldquo;{workspaceName}&rdquo; en {appName}.
+              <Section 
+                className="px-4 py-3"
+                style={{
+                  backgroundColor: '#EBEBEB',
+                  borderTop: '1px solid #d1d5db',
+                  padding: '12px 16px'
+                }}
+              >
+                <Text 
+                  className="text-xs text-center m-0"
+                  style={{color: '#6b7280', fontSize: '12px', textAlign: 'center', margin: 0}}
+                >
+                  Esta notificación fue enviada porque eres miembro del workspace &ldquo;{workspaceName}&rdquo; en Tinta Agency.
                 </Text>
-                <Text className="text-gray-400 text-xs text-center mt-1 mb-0">
-                  © 2025 {appName}. Especialistas en marketing de vinos.
+                <Text 
+                  className="text-xs text-center mt-1 mb-0"
+                  style={{color: '#9ca3af', fontSize: '12px', textAlign: 'center', margin: '4px 0 0 0'}}
+                >
+                  © 2025 Tinta Agency. Embajadores de la cultura del vino.
                 </Text>
               </Section>
             </Section>

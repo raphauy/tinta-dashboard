@@ -16,7 +16,6 @@ interface WorkspaceInvitationEmailProps {
   inviterName?: string
   workspaceName?: string
   acceptUrl?: string
-  appName?: string
   expiresInDays?: number
 }
 
@@ -25,24 +24,23 @@ export default function WorkspaceInvitationEmail({
   inviterName = "Juan Pérez",
   workspaceName = "Mi Workspace",
   acceptUrl = "https://ejemplo.com/invite/token123",
-  appName = "Tinta Agency",
   expiresInDays = 7
 }: WorkspaceInvitationEmailProps) {
   return (
     <Html>
       <Head />
       <Preview>
-        {inviterName} te ha invitado a unirte al workspace &ldquo;{workspaceName}&rdquo; en {appName}
+        {inviterName} te ha invitado a unirte al workspace &ldquo;{workspaceName}&rdquo; en Tinta Agency
       </Preview>
       <Tailwind>
         <Body className="bg-gray-100 font-sans">
           <Container className="mx-auto py-4 px-4 w-[580px] max-w-full">
             <Section className="bg-white border border-gray-300 rounded-lg overflow-hidden shadow-sm">
-              {/* Header with gradient */}
+              {/* Header with Tinta branding */}
               <Section 
-                className="bg-gradient-to-r from-blue-600 to-purple-600 text-white text-center py-4" 
+                className="text-white text-center py-4" 
                 style={{
-                  background: 'linear-gradient(to right, #2563eb, #9333ea)', 
+                  background: '#143F3B', 
                   color: '#ffffff', 
                   textAlign: 'center', 
                   padding: '16px 0'
@@ -53,13 +51,13 @@ export default function WorkspaceInvitationEmail({
                     className="text-lg font-bold m-0 text-white" 
                     style={{color: '#ffffff', margin: 0}}
                   >
-                    {appName}
+                    Tinta Agency
                   </Heading>
                   <Text 
                     className="text-white mt-1 mb-0 text-sm opacity-90" 
                     style={{color: '#ffffff', fontSize: '14px', margin: '4px 0 0 0'}}
                   >
-                    Invitación a Workspace
+                    Embajadores de la cultura del vino
                   </Text>
                 </Container>
               </Section>
@@ -72,7 +70,7 @@ export default function WorkspaceInvitationEmail({
                 
                 <Text className="text-gray-600 mb-4 leading-6 text-base">
                   <strong>{inviterName}</strong> te ha invitado a unirte al workspace{" "}
-                  <strong>&ldquo;{workspaceName}&rdquo;</strong> en {appName}.
+                  <strong>&ldquo;{workspaceName}&rdquo;</strong> en Tinta Agency.
                 </Text>
 
                 <Text className="text-gray-600 mb-4 leading-6 text-sm">
@@ -83,9 +81,9 @@ export default function WorkspaceInvitationEmail({
                 <Section className="text-center mb-6">
                   <Button
                     href={acceptUrl}
-                    className="bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg text-base inline-block no-underline"
+                    className="text-white font-semibold py-3 px-6 rounded-lg text-base inline-block no-underline"
                     style={{
-                      backgroundColor: '#2563eb',
+                      backgroundColor: '#143F3B',
                       color: '#ffffff',
                       fontWeight: '600',
                       padding: '12px 24px',
@@ -102,15 +100,39 @@ export default function WorkspaceInvitationEmail({
                   Si el botón no funciona, copia y pega el siguiente enlace en tu navegador:
                 </Text>
 
-                <Section className="bg-gray-50 border border-gray-200 rounded-lg p-3 mb-4">
-                  <Text className="text-blue-600 text-xs m-0 word-break-all font-mono">
+                <Section 
+                  className="rounded-lg p-3 mb-4"
+                  style={{
+                    backgroundColor: '#EBEBEB',
+                    border: '1px solid #d1d5db',
+                    borderRadius: '8px',
+                    padding: '12px',
+                    marginBottom: '16px'
+                  }}
+                >
+                  <Text 
+                    className="text-xs m-0 word-break-all font-mono"
+                    style={{color: '#143F3B', fontSize: '12px', margin: 0, fontFamily: 'monospace'}}
+                  >
                     {acceptUrl}
                   </Text>
                 </Section>
 
                 {/* Expiration notice */}
-                <Section className="bg-amber-50 border border-amber-200 rounded-lg p-3 mb-4">
-                  <Text className="text-amber-800 text-xs m-0 font-medium">
+                <Section 
+                  className="rounded-lg p-3 mb-4"
+                  style={{
+                    backgroundColor: '#E2E369',
+                    border: '1px solid #AE8928',
+                    borderRadius: '8px',
+                    padding: '12px',
+                    marginBottom: '16px'
+                  }}
+                >
+                  <Text 
+                    className="text-xs m-0 font-medium"
+                    style={{color: '#2E2E2E', fontSize: '12px', margin: 0, fontWeight: '500'}}
+                  >
                     ⏰ Esta invitación expirará en {expiresInDays} día{expiresInDays !== 1 ? 's' : ''}. 
                     Asegúrate de aceptarla antes de que caduque.
                   </Text>
@@ -122,12 +144,25 @@ export default function WorkspaceInvitationEmail({
               </Section>
 
               {/* Footer */}
-              <Section className="bg-gray-50 px-4 py-3 border-t border-gray-200">
-                <Text className="text-gray-500 text-xs text-center m-0">
-                  Esta invitación fue enviada a {invitedUserEmail} por {inviterName} desde {appName}.
+              <Section 
+                className="px-4 py-3"
+                style={{
+                  backgroundColor: '#EBEBEB',
+                  borderTop: '1px solid #d1d5db',
+                  padding: '12px 16px'
+                }}
+              >
+                <Text 
+                  className="text-xs text-center m-0"
+                  style={{color: '#6b7280', fontSize: '12px', textAlign: 'center', margin: 0}}
+                >
+                  Esta invitación fue enviada a {invitedUserEmail} por {inviterName} desde Tinta Agency.
                 </Text>
-                <Text className="text-gray-400 text-xs text-center mt-1 mb-0">
-                  © 2024 {appName}. Todos los derechos reservados.
+                <Text 
+                  className="text-xs text-center mt-1 mb-0"
+                  style={{color: '#9ca3af', fontSize: '12px', textAlign: 'center', margin: '4px 0 0 0'}}
+                >
+                  © 2025 Tinta Agency. Embajadores de la cultura del vino.
                 </Text>
               </Section>
             </Section>
