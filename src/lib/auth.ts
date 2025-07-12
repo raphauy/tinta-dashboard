@@ -6,6 +6,7 @@ import { verifyOtpToken } from "@/services/auth-service"
 export const { handlers, auth, signIn, signOut } = NextAuth({
   session: { strategy: "jwt" },
   trustHost: true,
+  secret: process.env.NEXTAUTH_SECRET,
   providers: [
     Credentials({
       id: "credentials",
@@ -15,33 +16,44 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         otp: { label: "OTP", type: "text" }
       },
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.otp) {
+        try {
+          if (!credentials?.email || !credentials?.otp) {
+            console.log("Missing credentials:", { email: !!credentials?.email, otp: !!credentials?.otp })
+            return null
+          }
+
+          // Find user using service
+          const user = await getUserByEmail(credentials.email as string)
+          console.log("User found:", !!user)
+
+          if (!user) {
+            console.log("User not found for email:", credentials.email)
+            return null
+          }
+
+          // Verify OTP using service
+          const verifiedToken = await verifyOtpToken({
+            userId: user.id,
+            token: credentials.otp as string
+          })
+          console.log("Token verified:", !!verifiedToken)
+
+          if (!verifiedToken) {
+            console.log("Invalid OTP token")
+            return null
+          }
+
+          console.log("Authentication successful for user:", user.email)
+          return {
+            id: user.id,
+            email: user.email,
+            name: user.name,
+            image: user.image,
+            role: user.role || "" // Usar cadena vacía para usuarios normales
+          }
+        } catch (error) {
+          console.error("NextAuth authorize error:", error)
           return null
-        }
-
-        // Find user using service
-        const user = await getUserByEmail(credentials.email as string)
-
-        if (!user) {
-          return null
-        }
-
-        // Verify OTP using service
-        const verifiedToken = await verifyOtpToken({
-          userId: user.id,
-          token: credentials.otp as string
-        })
-
-        if (!verifiedToken) {
-          return null
-        }
-
-        return {
-          id: user.id,
-          email: user.email,
-          name: user.name,
-          image: user.image,
-          role: user.role || "" // Usar cadena vacía para usuarios normales
         }
       }
     })
