@@ -15,8 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Tinta Agency",
-  description: "Kit de inicio para aplicaciones React con Next.js",
+  title: "Tinta Agency - Form Builder",
+  description: "Constructor de formularios profesional para agencias de comunicación y marketing especializado en vinos",
 };
 
 export default function RootLayout({

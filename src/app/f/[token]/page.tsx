@@ -32,7 +32,7 @@ export default async function PublicFormPage({ params }: PublicFormPageProps) {
     <div className="max-w-4xl mx-auto">
       {/* Header del formulario */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-foreground mb-2">
+        <h1 className="text-3xl font-bold text-tinta-verde-uva mb-2">
           {form.name}
         </h1>
         {form.description && (
@@ -40,7 +40,7 @@ export default async function PublicFormPage({ params }: PublicFormPageProps) {
             {form.description}
           </p>
         )}
-        <div className="mt-4 p-4 bg-muted/50 rounded-lg">
+        <div className="mt-4 p-4 bg-tinta-paper/50 dark:bg-gray-800/50 rounded-lg border border-tinta-paper/80 dark:border-gray-700/80">
           <div className="flex items-center space-x-3 mb-2">
             <WorkspaceAvatar 
               workspace={form.workspace}

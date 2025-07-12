@@ -105,7 +105,7 @@ export function AttachmentUploader({
         <Button
           type="button"
           variant="outline"
-          className="w-full bg-pink-50 hover:bg-pink-100 text-pink-600 border-pink-200 hover:border-pink-300"
+          className="w-full bg-tinta-rosa-vino/10 hover:bg-tinta-rosa-vino/20 text-tinta-rosa-vino border-tinta-rosa-vino/30 hover:border-tinta-rosa-vino/50"
           onClick={() => setIsExpanded(true)}
         >
           <Paperclip className="mr-2 h-4 w-4" />
@@ -148,23 +148,23 @@ export function AttachmentUploader({
           <div
             className={`border-2 border-dashed rounded-lg p-4 text-center transition-colors ${
               dragActive 
-                ? 'border-pink-400 bg-pink-50' 
+                ? 'border-tinta-rosa-vino bg-tinta-rosa-vino/10' 
                 : error 
                 ? 'border-red-500 bg-red-50/50'
-                : 'border-pink-200 bg-pink-50/50 hover:border-pink-300'
+                : 'border-tinta-rosa-vino/30 bg-tinta-rosa-vino/5 hover:border-tinta-rosa-vino/50'
             }`}
             onDragEnter={handleDrag}
             onDragLeave={handleDrag}
             onDragOver={handleDrag}
             onDrop={handleDrop}
           >
-            <Upload className="mx-auto h-10 w-10 text-pink-400" />
+            <Upload className="mx-auto h-10 w-10 text-tinta-rosa-vino" />
             <div className="mt-3">
               <Button 
                 type="button"
                 variant="outline"
                 size="sm"
-                className="bg-white hover:bg-pink-50 text-pink-600 border-pink-200"
+                className="bg-white hover:bg-tinta-rosa-vino/10 text-tinta-rosa-vino border-tinta-rosa-vino/30"
                 onClick={() => fileInputRef.current?.click()}
               >
                 Seleccionar archivos

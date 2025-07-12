@@ -210,7 +210,7 @@ export function PublicFormRenderer({ form }: PublicFormRendererProps) {
           <CardContent className="pt-6">
             <Button 
               type="submit" 
-              className="w-full" 
+              className="w-full bg-tinta-verde-uva hover:bg-tinta-verde-uva/90 text-white" 
               disabled={isSubmitting}
               size="lg"
             >

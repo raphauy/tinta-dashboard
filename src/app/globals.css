@@ -4,6 +4,15 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
+  /* ========== TINTA BRAND COLORS UTILITIES ========== */
+  --color-tinta-verde-uva: var(--tinta-verde-uva);
+  --color-tinta-paper: var(--tinta-paper);
+  --color-tinta-gris: var(--tinta-gris);
+  --color-tinta-rosa-vino: var(--tinta-rosa-vino);
+  --color-tinta-amarillo: var(--tinta-amarillo);
+  --color-tinta-ocre: var(--tinta-ocre);
+  
+  /* ========== SYSTEM COLORS ========== */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
@@ -45,74 +54,130 @@
 }
 
 :root {
+  /* ========== TINTA BRAND COLORS 2025 ========== */
+  /* Colores principales según manual oficial */
+  --tinta-verde-uva: #143f3b;
+  --tinta-paper: #ebebeb;
+  --tinta-gris: #2e2e2e;
+  --tinta-rosa-vino: #ddbbc0;
+  --tinta-amarillo: #e2e369;
+  --tinta-ocre: #ae8928;
+
+  /* ========== DESIGN SYSTEM ========== */
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.985 0 0);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  
+  /* Background y foreground usando colores Tinta */
+  --background: #ffffff;
+  --foreground: var(--tinta-gris);
+  
+  /* Cards con Paper como base */
+  --card: #ffffff;
+  --card-foreground: var(--tinta-gris);
+  
+  /* Popovers */
+  --popover: #ffffff;
+  --popover-foreground: var(--tinta-gris);
+  
+  /* Primary usando Verde Uva oficial */
+  --primary: var(--tinta-verde-uva);
+  --primary-foreground: #ffffff;
+  
+  /* Secondary usando Paper */
+  --secondary: var(--tinta-paper);
+  --secondary-foreground: var(--tinta-gris);
+  
+  /* Muted usando Paper con más contraste */
+  --muted: #f5f5f5;
+  --muted-foreground: #6b7280;
+  
+  /* Accent usando Rosa Vino */
+  --accent: var(--tinta-rosa-vino);
+  --accent-foreground: var(--tinta-gris);
+  
+  /* Destructive mantenido para consistencia */
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  
+  /* Borders y inputs usando tonos neutros */
+  --border: #e5e7eb;
+  --input: #f9fafb;
+  --ring: var(--tinta-verde-uva);
+  
+  /* Charts usando paleta Tinta */
+  --chart-1: var(--tinta-verde-uva);
+  --chart-2: var(--tinta-rosa-vino);
+  --chart-3: var(--tinta-amarillo);
+  --chart-4: var(--tinta-ocre);
+  --chart-5: var(--tinta-gris);
+  
+  /* Sidebar usando Verde Uva como base */
+  --sidebar: #ffffff;
+  --sidebar-foreground: var(--tinta-gris);
+  --sidebar-primary: var(--tinta-verde-uva);
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #f8fafc;
+  --sidebar-accent-foreground: var(--tinta-gris);
+  --sidebar-border: #e5e7eb;
+  --sidebar-ring: var(--tinta-verde-uva);
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --destructive-foreground: oklch(0.985 0 0);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  /* ========== TINTA BRAND COLORS DARK MODE ========== */
+  /* Adaptación de colores Tinta para modo oscuro */
+  
+  /* Background oscuro manteniendo identidad */
+  --background: #0f1419;
+  --foreground: var(--tinta-paper);
+  
+  /* Cards con fondo oscuro pero conservando marca */
+  --card: #1a1f2e;
+  --card-foreground: var(--tinta-paper);
+  
+  /* Popovers */
+  --popover: #1a1f2e;
+  --popover-foreground: var(--tinta-paper);
+  
+  /* Primary manteniendo Verde Uva pero más brillante en dark */
+  --primary: #2a5955;
+  --primary-foreground: #ffffff;
+  
+  /* Secondary usando gris oscuro */
+  --secondary: #374151;
+  --secondary-foreground: var(--tinta-paper);
+  
+  /* Muted adaptado para mejor contraste */
+  --muted: #374151;
+  --muted-foreground: #d1d5db;
+  
+  /* Accent manteniendo Rosa Vino pero adaptado */
+  --accent: #c4a1a6;
+  --accent-foreground: var(--tinta-gris);
+  
+  /* Destructive */
+  --destructive: #f87171;
+  --destructive-foreground: #ffffff;
+  
+  /* Borders e inputs para dark mode */
+  --border: #374151;
+  --input: #1f2937;
+  --ring: #2a5955;
+  
+  /* Charts manteniendo paleta Tinta adaptada */
+  --chart-1: #2a5955;
+  --chart-2: #c4a1a6;
+  --chart-3: #d4d163;
+  --chart-4: #c49a3a;
+  --chart-5: #6b7280;
+  
+  /* Sidebar con identidad Tinta en dark */
+  --sidebar: #1a1f2e;
+  --sidebar-foreground: var(--tinta-paper);
+  --sidebar-primary: #2a5955;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #374151;
+  --sidebar-accent-foreground: var(--tinta-paper);
+  --sidebar-border: #374151;
+  --sidebar-ring: #2a5955;
 }
 
 @layer base {
