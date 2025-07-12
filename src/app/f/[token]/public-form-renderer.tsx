@@ -9,7 +9,6 @@ import { type FormField } from '@/types/form-field'
 import { type FormWithWorkspaceUsers } from '@/services/form-service'
 import { TextFieldRenderer } from './text-field-renderer'
 import { TextareaFieldRenderer } from './textarea-field-renderer'
-import { FileFieldRenderer } from './file-field-renderer'
 import { submitFormResponse } from './actions'
 
 interface PublicFormRendererProps {
@@ -18,6 +17,7 @@ interface PublicFormRendererProps {
 
 export function PublicFormRenderer({ form }: PublicFormRendererProps) {
   const [formData, setFormData] = useState<Record<string, unknown>>({})
+  const [attachments, setAttachments] = useState<Record<string, File[]>>({})
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
@@ -50,14 +50,29 @@ export function PublicFormRenderer({ form }: PublicFormRendererProps) {
     }
   }
 
+  const handleAttachmentsChange = (fieldId: string, files: File[]) => {
+    setAttachments(prev => ({
+      ...prev,
+      [fieldId]: files
+    }))
+  }
+
   const validateForm = () => {
     const newErrors: Record<string, string> = {}
     
     sortedFields.forEach(field => {
       if (field.required) {
         const value = formData[field.id]
-        if (!value || value === '' || (Array.isArray(value) && value.length === 0)) {
+        const fieldAttachments = attachments[field.id] || []
+        
+        // Validar campo principal
+        if (!value || value === '') {
           newErrors[field.id] = `${field.label} es obligatorio`
+        }
+        
+        // Si el campo permite adjuntos y están marcados como requeridos
+        if (field.allowAttachments && field.required && fieldAttachments.length === 0) {
+          // Por ahora no requerimos adjuntos obligatorios
         }
       }
     })
@@ -77,7 +92,17 @@ export function PublicFormRenderer({ form }: PublicFormRendererProps) {
     setIsSubmitting(true)
     
     try {
-      const result = await submitFormResponse(form.shareToken, formData)
+      // Combinar datos del formulario con archivos adjuntos
+      const dataWithAttachments = { ...formData }
+      
+      // Agregar archivos a los datos del formulario
+      Object.entries(attachments).forEach(([fieldId, files]) => {
+        if (files.length > 0) {
+          dataWithAttachments[fieldId] = files
+        }
+      })
+      
+      const result = await submitFormResponse(form.shareToken, dataWithAttachments)
       
       if (result.success) {
         setIsSubmitted(true)
@@ -105,6 +130,8 @@ export function PublicFormRenderer({ form }: PublicFormRendererProps) {
             value={typeof fieldValue === 'string' ? fieldValue : ''}
             onChange={(value: string) => handleFieldChange(field.id, value)}
             error={errors[field.id]}
+            attachments={attachments[field.id]}
+            onAttachmentsChange={(files: File[]) => handleAttachmentsChange(field.id, files)}
           />
         )
       case 'textarea':
@@ -115,16 +142,8 @@ export function PublicFormRenderer({ form }: PublicFormRendererProps) {
             value={typeof fieldValue === 'string' ? fieldValue : ''}
             onChange={(value: string) => handleFieldChange(field.id, value)}
             error={errors[field.id]}
-          />
-        )
-      case 'file':
-        return (
-          <FileFieldRenderer
-            key={field.id}
-            field={field}
-            value={Array.isArray(fieldValue) ? fieldValue : []}
-            onChange={(value: File[]) => handleFieldChange(field.id, value)}
-            error={errors[field.id]}
+            attachments={attachments[field.id]}
+            onAttachmentsChange={(files: File[]) => handleAttachmentsChange(field.id, files)}
           />
         )
       default:

@@ -223,28 +223,93 @@ export function ResponseViewer({ response }: ResponseViewerProps) {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          {Object.entries(responseData).map(([fieldId, value], index) => (
-            <div key={fieldId}>
-              <div className="space-y-2">
-                <div className="flex items-center gap-2">
-                  <h4 className="font-medium text-sm text-muted-foreground">
-                    Campo: {fieldId}
-                  </h4>
+          {Object.entries(responseData).map(([fieldId, value], index) => {
+            // Buscar archivos asociados a este campo
+            const fieldFiles = response.files.filter(file => file.fieldName === fieldId)
+            
+            return (
+              <div key={fieldId}>
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2">
+                    <h4 className="font-medium text-sm text-muted-foreground">
+                      Campo: {fieldId}
+                    </h4>
+                    {fieldFiles.length > 0 && (
+                      <Badge variant="secondary" className="text-xs">
+                        {fieldFiles.length} archivo{fieldFiles.length !== 1 ? 's' : ''} adjunto{fieldFiles.length !== 1 ? 's' : ''}
+                      </Badge>
+                    )}
+                  </div>
+                  
+                  {/* Contenido del campo */}
+                  <div className="p-3 bg-gray-50 dark:bg-gray-900 rounded-lg">
+                    <p className="text-sm whitespace-pre-wrap">
+                      {typeof value === 'string' 
+                        ? (value || '(sin valor)')
+                        : JSON.stringify(value, null, 2)
+                      }
+                    </p>
+                  </div>
+                  
+                  {/* Archivos adjuntos del campo */}
+                  {fieldFiles.length > 0 && (
+                    <div className="ml-4 space-y-2">
+                      <p className="text-xs text-muted-foreground font-medium">
+                        Archivos adjuntos:
+                      </p>
+                      <div className="space-y-2">
+                        {fieldFiles.map((file) => {
+                          const FileIcon = getFileIcon(file.fileType)
+                          const fileColor = getFileColor(file.fileType)
+                          
+                          return (
+                            <div 
+                              key={file.id}
+                              className="flex items-center justify-between p-2 bg-white dark:bg-gray-800 rounded border"
+                            >
+                              <div className="flex items-center gap-2">
+                                <div className={`h-6 w-6 rounded flex items-center justify-center ${fileColor}`}>
+                                  <FileIcon className="h-3 w-3" />
+                                </div>
+                                <div>
+                                  <p className="text-xs font-medium">{file.fileName}</p>
+                                  <p className="text-xs text-muted-foreground">
+                                    {formatFileSize(file.fileSize)}
+                                  </p>
+                                </div>
+                              </div>
+                              
+                              <div className="flex items-center gap-1">
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => handleFilePreview(file.fileUrl)}
+                                  className="h-6 w-6 p-0"
+                                >
+                                  <ExternalLink className="h-3 w-3" />
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => handleFileDownload(file.id, file.fileName)}
+                                  className="h-6 w-6 p-0"
+                                >
+                                  <Download className="h-3 w-3" />
+                                </Button>
+                              </div>
+                            </div>
+                          )
+                        })}
+                      </div>
+                    </div>
+                  )}
                 </div>
-                <div className="p-3 bg-gray-50 dark:bg-gray-900 rounded-lg">
-                  <p className="text-sm whitespace-pre-wrap">
-                    {typeof value === 'string' 
-                      ? (value || '(sin valor)')
-                      : JSON.stringify(value, null, 2)
-                    }
-                  </p>
-                </div>
+                {index < Object.entries(responseData).length - 1 && (
+                  <Separator className="mt-4" />
+                )}
               </div>
-              {index < Object.entries(responseData).length - 1 && (
-                <Separator className="mt-4" />
-              )}
-            </div>
-          ))}
+            )
+          })}
           
           {Object.keys(responseData).length === 0 && (
             <div className="text-center py-8 text-muted-foreground">

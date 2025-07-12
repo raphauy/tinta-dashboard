@@ -42,9 +42,9 @@ export async function submitFormResponse(formId: string, formData: Record<string
     }> = []
 
     const fields = form.fields as FormField[]
-    const fileFields = fields.filter(field => field.type === 'file')
+    const fieldsWithAttachments = fields.filter(field => field.allowAttachments)
 
-    for (const field of fileFields) {
+    for (const field of fieldsWithAttachments) {
       const fieldFiles = formData[field.id]
       if (fieldFiles && Array.isArray(fieldFiles)) {
         for (const file of fieldFiles) {
@@ -89,7 +89,7 @@ export async function submitFormResponse(formId: string, formData: Record<string
 
     // 3. Preparar datos para guardar (sin archivos)
     const cleanData = { ...formData }
-    fileFields.forEach(field => {
+    fieldsWithAttachments.forEach(field => {
       delete cleanData[field.id] // Remover archivos de los datos principales
     })
 

@@ -53,7 +53,6 @@ export function DraggableField({
   const fieldTypes = [
     { value: 'text', label: FIELD_TYPE_CONFIG.text.label },
     { value: 'textarea', label: FIELD_TYPE_CONFIG.textarea.label },
-    { value: 'file', label: FIELD_TYPE_CONFIG.file.label },
   ]
 
   return (
@@ -83,13 +82,11 @@ export function DraggableField({
                 className={`text-xs ${
                   field.type === 'text' ? 'bg-blue-100 text-blue-800' :
                   field.type === 'textarea' ? 'bg-green-100 text-green-800' :
-                  field.type === 'file' ? 'bg-purple-100 text-purple-800' :
                   ''
                 }`}
               >
                 {field.type === 'text' && 'Texto'}
                 {field.type === 'textarea' && 'Texto largo'}
-                {field.type === 'file' && 'Archivo'}
               </Badge>
               {field.required && (
                 <Badge variant="outline" className="text-xs">
@@ -180,18 +177,34 @@ export function DraggableField({
             />
           </div>
 
-          <div className="flex items-center space-x-2">
-            <Checkbox
-              id={`field-required-${field.id}`}
-              checked={field.required}
-              onCheckedChange={(checked) => onUpdateField(field.id, { required: Boolean(checked) })}
-            />
-            <Label 
-              htmlFor={`field-required-${field.id}`}
-              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-            >
-              Campo requerido
-            </Label>
+          <div className="space-y-4">
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id={`field-required-${field.id}`}
+                checked={field.required}
+                onCheckedChange={(checked) => onUpdateField(field.id, { required: Boolean(checked) })}
+              />
+              <Label 
+                htmlFor={`field-required-${field.id}`}
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              >
+                Campo requerido
+              </Label>
+            </div>
+            
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id={`field-attachments-${field.id}`}
+                checked={field.allowAttachments || false}
+                onCheckedChange={(checked) => onUpdateField(field.id, { allowAttachments: Boolean(checked) })}
+              />
+              <Label 
+                htmlFor={`field-attachments-${field.id}`}
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              >
+                Permitir archivos adjuntos
+              </Label>
+            </div>
           </div>
         </CardContent>
       )}

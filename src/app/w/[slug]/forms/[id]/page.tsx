@@ -171,11 +171,17 @@ async function FormDetailContent({ workspaceSlug, formId }: { workspaceSlug: str
                             <p className="text-sm text-muted-foreground">{field.helpText}</p>
                           )}
                         </div>
-                        <Badge variant="secondary" className="text-xs">
-                          {field.type === 'text' && 'Texto'}
-                          {field.type === 'textarea' && 'Texto largo'}
-                          {field.type === 'file' && 'Archivo'}
-                        </Badge>
+                        <div className="flex items-center gap-2">
+                          <Badge variant="secondary" className="text-xs">
+                            {field.type === 'text' && 'Texto'}
+                            {field.type === 'textarea' && 'Texto largo'}
+                          </Badge>
+                          {field.allowAttachments && (
+                            <Badge variant="outline" className="text-xs bg-pink-50 text-pink-600 border-pink-200">
+                              Con adjuntos
+                            </Badge>
+                          )}
+                        </div>
                       </div>
                     </div>
                   ))}

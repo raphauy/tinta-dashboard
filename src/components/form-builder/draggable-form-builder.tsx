@@ -137,6 +137,7 @@ export function DraggableFormBuilder({
       helpText: '',
       required: false,
       order: targetIndex,
+      allowAttachments: false,
       properties: {}
     }
 

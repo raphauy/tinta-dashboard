@@ -115,11 +115,17 @@ export default async function TemplateDetailPage({ params }: TemplateDetailPageP
                       <span className="text-sm font-medium text-muted-foreground">
                         Campo {index + 1}
                       </span>
-                      <Badge variant="outline" className="text-xs">
-                        {field.type === 'text' && 'Texto corto'}
-                        {field.type === 'textarea' && 'Texto largo'}
-                        {field.type === 'file' && 'Archivo'}
-                      </Badge>
+                      <div className="flex items-center gap-2">
+                        <Badge variant="outline" className="text-xs">
+                          {field.type === 'text' && 'Texto corto'}
+                          {field.type === 'textarea' && 'Texto largo'}
+                        </Badge>
+                        {field.allowAttachments && (
+                          <Badge variant="outline" className="text-xs bg-pink-50 text-pink-600 border-pink-200">
+                            Con adjuntos
+                          </Badge>
+                        )}
+                      </div>
                       {field.required && (
                         <Badge variant="secondary" className="text-xs">
                           Requerido
@@ -132,10 +138,10 @@ export default async function TemplateDetailPage({ params }: TemplateDetailPageP
                         <p className="text-sm text-muted-foreground mt-1">{field.helpText}</p>
                       )}
                     </div>
-                    {field.type === 'file' && (
-                      <div className="mt-2 p-2 bg-muted rounded text-xs space-y-1">
-                        <p className="font-medium">Configuración de archivos:</p>
-                        <ul className="text-muted-foreground space-y-0.5">
+                    {field.allowAttachments && (
+                      <div className="mt-2 p-2 bg-pink-50 border border-pink-200 rounded text-xs space-y-1">
+                        <p className="font-medium text-pink-800">Permite archivos adjuntos:</p>
+                        <ul className="text-pink-700 space-y-0.5">
                           <li>• Tipos: PDF, Word, imágenes, ZIP</li>
                           <li>• Tamaño máximo: 10MB</li>
                           <li>• Múltiples archivos permitidos</li>

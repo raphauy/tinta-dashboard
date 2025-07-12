@@ -1,26 +1,37 @@
 'use client'
 
 import { useState, useRef } from 'react'
-import { Label } from '@/components/ui/label'
-import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Upload, X, File, AlertCircle } from 'lucide-react'
-import { type FormField } from '@/types/form-field'
+import { Upload, X, File, AlertCircle, Paperclip } from 'lucide-react'
 
-interface FileFieldRendererProps {
-  field: FormField
+interface AttachmentUploaderProps {
+  fieldId: string
+  fieldLabel: string
   value: File[]
   onChange: (value: File[]) => void
   error?: string
 }
 
-export function FileFieldRenderer({ field, value, onChange, error }: FileFieldRendererProps) {
+export function AttachmentUploader({ 
+  fieldId, 
+  value, 
+  onChange, 
+  error 
+}: AttachmentUploaderProps) {
   const [dragActive, setDragActive] = useState(false)
+  const [isExpanded, setIsExpanded] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const files = value || []
   const maxFileSize = 10 * 1024 * 1024 // 10MB
-  const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'image/jpeg', 'image/png', 'application/zip']
+  const allowedTypes = [
+    'application/pdf', 
+    'application/msword', 
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 
+    'image/jpeg', 
+    'image/png', 
+    'application/zip'
+  ]
 
   const handleDrag = (e: React.DragEvent) => {
     e.preventDefault()
@@ -70,6 +81,7 @@ export function FileFieldRenderer({ field, value, onChange, error }: FileFieldRe
 
     if (validFiles.length > 0) {
       onChange([...files, ...validFiles])
+      setIsExpanded(true) // Expandir automáticamente cuando se añaden archivos
     }
   }
 
@@ -86,40 +98,73 @@ export function FileFieldRenderer({ field, value, onChange, error }: FileFieldRe
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
   }
 
-  return (
-    <Card>
-      <CardContent className="pt-6">
-        <div className="space-y-4">
-          <Label htmlFor={field.id} className="text-base font-medium">
-            {field.label}
-            {field.required && <span className="text-red-500 ml-1">*</span>}
-          </Label>
-          
-          {field.helpText && (
-            <p className="text-sm text-muted-foreground">
-              {field.helpText}
-            </p>
-          )}
+  // Si no está expandido, mostrar solo el botón rosa
+  if (!isExpanded && files.length === 0) {
+    return (
+      <div className="mt-3">
+        <Button
+          type="button"
+          variant="outline"
+          className="w-full bg-pink-50 hover:bg-pink-100 text-pink-600 border-pink-200 hover:border-pink-300"
+          onClick={() => setIsExpanded(true)}
+        >
+          <Paperclip className="mr-2 h-4 w-4" />
+          Adjuntar archivos
+        </Button>
+        {error && (
+          <div className="flex items-center space-x-2 text-red-500 mt-2">
+            <AlertCircle className="h-4 w-4" />
+            <p className="text-sm">{error}</p>
+          </div>
+        )}
+      </div>
+    )
+  }
 
+  // Vista expandida con zona de carga y archivos
+  return (
+    <div className="mt-3 space-y-3">
+      {/* Botón colapsable si hay archivos */}
+      {files.length > 0 && (
+        <div className="flex items-center justify-between">
+          <span className="text-sm text-muted-foreground">
+            {files.length} archivo{files.length !== 1 ? 's' : ''} adjunto{files.length !== 1 ? 's' : ''}
+          </span>
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={() => setIsExpanded(!isExpanded)}
+          >
+            {isExpanded ? 'Ocultar' : 'Mostrar'}
+          </Button>
+        </div>
+      )}
+
+      {/* Zona de carga expandida */}
+      {isExpanded && (
+        <div className="space-y-3">
           {/* Drop zone */}
           <div
-            className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors ${
+            className={`border-2 border-dashed rounded-lg p-4 text-center transition-colors ${
               dragActive 
-                ? 'border-primary bg-primary/5' 
+                ? 'border-pink-400 bg-pink-50' 
                 : error 
                 ? 'border-red-500 bg-red-50/50'
-                : 'border-muted-foreground/25 hover:border-primary/50'
+                : 'border-pink-200 bg-pink-50/50 hover:border-pink-300'
             }`}
             onDragEnter={handleDrag}
             onDragLeave={handleDrag}
             onDragOver={handleDrag}
             onDrop={handleDrop}
           >
-            <Upload className="mx-auto h-12 w-12 text-muted-foreground" />
-            <div className="mt-4">
+            <Upload className="mx-auto h-10 w-10 text-pink-400" />
+            <div className="mt-3">
               <Button 
                 type="button"
                 variant="outline"
+                size="sm"
+                className="bg-white hover:bg-pink-50 text-pink-600 border-pink-200"
                 onClick={() => fileInputRef.current?.click()}
               >
                 Seleccionar archivos
@@ -145,19 +190,18 @@ export function FileFieldRenderer({ field, value, onChange, error }: FileFieldRe
               }
             }}
             className="hidden"
-            aria-required={field.required}
+            id={`${fieldId}-attachments`}
           />
 
           {/* File list */}
           {files.length > 0 && (
             <div className="space-y-2">
-              <h4 className="text-sm font-medium">Archivos seleccionados:</h4>
               {files.map((file, index) => (
-                <div key={index} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
-                  <div className="flex items-center space-x-3">
-                    <File className="h-4 w-4 text-muted-foreground" />
-                    <div>
-                      <p className="text-sm font-medium">{file.name}</p>
+                <div key={index} className="flex items-center justify-between p-2 bg-muted/50 rounded-lg">
+                  <div className="flex items-center space-x-2">
+                    <File className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                    <div className="min-w-0">
+                      <p className="text-sm font-medium truncate">{file.name}</p>
                       <p className="text-xs text-muted-foreground">
                         {formatFileSize(file.size)}
                       </p>
@@ -168,6 +212,7 @@ export function FileFieldRenderer({ field, value, onChange, error }: FileFieldRe
                     variant="ghost"
                     size="sm"
                     onClick={() => removeFile(index)}
+                    className="flex-shrink-0"
                   >
                     <X className="h-4 w-4" />
                   </Button>
@@ -175,15 +220,15 @@ export function FileFieldRenderer({ field, value, onChange, error }: FileFieldRe
               ))}
             </div>
           )}
-
-          {error && (
-            <div className="flex items-center space-x-2 text-red-500">
-              <AlertCircle className="h-4 w-4" />
-              <p className="text-sm">{error}</p>
-            </div>
-          )}
         </div>
-      </CardContent>
-    </Card>
+      )}
+
+      {error && (
+        <div className="flex items-center space-x-2 text-red-500">
+          <AlertCircle className="h-4 w-4" />
+          <p className="text-sm">{error}</p>
+        </div>
+      )}
+    </div>
   )
 }

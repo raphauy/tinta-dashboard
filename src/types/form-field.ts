@@ -6,13 +6,14 @@ import { z } from "zod"
  */
 export const formFieldSchema = z.object({
   id: z.string().min(1, "ID de campo requerido"),
-  type: z.enum(['text', 'textarea', 'file'], {
+  type: z.enum(['text', 'textarea'], {
     errorMap: () => ({ message: "Tipo de campo inválido" })
   }),
   label: z.string().min(1, "Etiqueta requerida"),
   helpText: z.string().optional(),
   required: z.boolean(),
   order: z.number().int().min(0, "Orden debe ser positivo"),
+  allowAttachments: z.boolean().optional().default(false), // NUEVO: Permite adjuntar archivos
   properties: z.record(z.any()).optional()
 })
 
@@ -24,7 +25,7 @@ export type FormField = z.infer<typeof formFieldSchema>
 /**
  * Tipos disponibles para campos de formulario
  */
-export const FIELD_TYPES = ['text', 'textarea', 'file'] as const
+export const FIELD_TYPES = ['text', 'textarea'] as const
 export type FieldType = typeof FIELD_TYPES[number]
 
 /**
@@ -38,9 +39,5 @@ export const FIELD_TYPE_CONFIG = {
   textarea: { 
     label: 'Texto largo',
     description: 'Campo de texto de múltiples líneas'
-  },
-  file: { 
-    label: 'Archivo',
-    description: 'Campo para subir archivos'
   }
 } as const

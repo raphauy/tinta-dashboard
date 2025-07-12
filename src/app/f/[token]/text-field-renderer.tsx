@@ -6,15 +6,27 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { AlertCircle } from 'lucide-react'
 import { type FormField } from '@/types/form-field'
+import { AttachmentUploader } from './attachment-uploader'
 
 interface TextFieldRendererProps {
   field: FormField
   value: string
   onChange: (value: string) => void
   error?: string
+  attachments?: File[]
+  onAttachmentsChange?: (files: File[]) => void
+  attachmentError?: string
 }
 
-export function TextFieldRenderer({ field, value, onChange, error }: TextFieldRendererProps) {
+export function TextFieldRenderer({ 
+  field, 
+  value, 
+  onChange, 
+  error,
+  attachments,
+  onAttachmentsChange,
+  attachmentError
+}: TextFieldRendererProps) {
   return (
     <TooltipProvider>
       <Card>
@@ -58,6 +70,17 @@ export function TextFieldRenderer({ field, value, onChange, error }: TextFieldRe
             
             {error && (
               <p className="text-sm text-red-500">{error}</p>
+            )}
+            
+            {/* Mostrar AttachmentUploader si el campo permite adjuntos */}
+            {field.allowAttachments && onAttachmentsChange && (
+              <AttachmentUploader
+                fieldId={field.id}
+                fieldLabel={field.label}
+                value={attachments || []}
+                onChange={onAttachmentsChange}
+                error={attachmentError}
+              />
             )}
           </div>
         </CardContent>

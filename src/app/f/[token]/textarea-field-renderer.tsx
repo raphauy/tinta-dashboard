@@ -6,15 +6,27 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { AlertCircle } from 'lucide-react'
 import { type FormField } from '@/types/form-field'
+import { AttachmentUploader } from './attachment-uploader'
 
 interface TextareaFieldRendererProps {
   field: FormField
   value: string
   onChange: (value: string) => void
   error?: string
+  attachments?: File[]
+  onAttachmentsChange?: (files: File[]) => void
+  attachmentError?: string
 }
 
-export function TextareaFieldRenderer({ field, value, onChange, error }: TextareaFieldRendererProps) {
+export function TextareaFieldRenderer({ 
+  field, 
+  value, 
+  onChange, 
+  error,
+  attachments,
+  onAttachmentsChange,
+  attachmentError
+}: TextareaFieldRendererProps) {
   const maxLength = 2000 // Límite razonable para textarea
   const currentLength = value.length
 
@@ -70,6 +82,17 @@ export function TextareaFieldRenderer({ field, value, onChange, error }: Textare
                 {currentLength}/{maxLength} caracteres
               </p>
             </div>
+            
+            {/* Mostrar AttachmentUploader si el campo permite adjuntos */}
+            {field.allowAttachments && onAttachmentsChange && (
+              <AttachmentUploader
+                fieldId={field.id}
+                fieldLabel={field.label}
+                value={attachments || []}
+                onChange={onAttachmentsChange}
+                error={attachmentError}
+              />
+            )}
           </div>
         </CardContent>
       </Card>

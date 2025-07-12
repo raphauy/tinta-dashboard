@@ -54,13 +54,13 @@ export function TemplatePreview({ template, className = '', formName }: Template
           />
         )}
         
-        {field.type === 'file' && (
+        {field.allowAttachments && (
           <div className="space-y-2">
-            <div className="border-2 border-dashed border-muted-foreground/25 rounded-lg p-6 bg-muted/25">
+            <div className="border-2 border-dashed border-pink-200 rounded-lg p-4 bg-pink-50/50">
               <div className="text-center">
-                <Upload className="mx-auto h-8 w-8 text-muted-foreground/50" />
+                <Upload className="mx-auto h-6 w-6 text-pink-400" />
                 <p className="mt-2 text-sm text-muted-foreground">
-                  Arrastra archivos aquí o haz clic para seleccionar
+                  Este campo permite archivos adjuntos
                 </p>
                 <p className="text-xs text-muted-foreground mt-1">
                   PDF, Word, imágenes, ZIP (máx. 10MB)

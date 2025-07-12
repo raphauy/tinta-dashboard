@@ -90,57 +90,125 @@ async function main() {
       description: 'Plantilla para recopilar información necesaria para el diseño de logotipos',
       fields: [
         {
-          id: 'company-name',
+          id: 'brand-name',
           type: 'text',
-          label: 'Nombre de la empresa',
-          helpText: 'Ingrese el nombre completo de la empresa',
+          label: 'Nombre de la marca',
+          helpText: 'Nombre de la marca',
           required: true,
           order: 1
         },
         {
-          id: 'company-description',
+          id: 'brand-description',
           type: 'textarea',
-          label: 'Descripción de la empresa',
-          helpText: 'Describa brevemente qué hace su empresa',
+          label: 'Descripción breve',
+          helpText: '¿Qué hace la marca y cuál es su propósito?',
           required: true,
           order: 2
+        },
+        {
+          id: 'tagline',
+          type: 'textarea',
+          label: 'Tagline',
+          helpText: '¿Tiene un slogan o tagline? (Si tiene o si desea incluir uno en el logo)',
+          required: false,
+          order: 3
+        },
+        {
+          id: 'brand-values',
+          type: 'textarea',
+          label: 'Valores y personalidad',
+          helpText: '¿Qué valores y personalidad debe reflejar el logo? (Ejemplo: confianza, innovación, cercanía, lujo, minimalismo, etc.)',
+          required: true,
+          order: 4
+        },
+        {
+          id: 'brand-personality',
+          type: 'textarea',
+          label: 'Personalidad del logo',
+          helpText: 'Si el logo fuera una persona, ¿cómo la describiría?',
+          required: true,
+          order: 5
+        },
+        {
+          id: 'brand-keywords',
+          type: 'textarea',
+          label: 'Palabras clave',
+          helpText: '¿Con qué palabras clave quiere que se asocie la marca?',
+          required: true,
+          order: 6
+        },
+        {
+          id: 'corporate-colors',
+          type: 'textarea',
+          label: 'Colores corporativos',
+          helpText: '¿Tienen colores corporativos definidos? (Si no, ¿qué colores les gustaría o cuáles no usarían?)',
+          required: false,
+          order: 7
+        },
+        {
+          id: 'typography-preferences',
+          type: 'textarea',
+          label: 'Preferencias tipográficas',
+          helpText: '¿Tienen preferencias tipográficas? (Ejemplo: serif, sans serif, manuscrita, decorativa)',
+          required: false,
+          order: 8
+        },
+        {
+          id: 'logo-type',
+          type: 'textarea',
+          label: 'Tipo de marca',
+          helpText: '¿Imaginan la marca como Isotipo, Logotipo, Imagotipo o Isologo?',
+          required: false,
+          order: 9
+        },
+        {
+          id: 'reference-logos',
+          type: 'textarea',
+          label: 'Marcas que admiran',
+          helpText: '¿Existen marcas o logos que admiren? (Pueden ser de cualquier sector, ¿qué les gusta de ellos?)',
+          required: false,
+          order: 10
+        },
+        {
+          id: 'reference-images',
+          type: 'textarea',
+          label: 'Imágenes de referencia',
+          helpText: 'Adjúntalas en esta carpeta',
+          required: false,
+          order: 11,
+          allowAttachments: true
+        },
+        {
+          id: 'elements-to-avoid',
+          type: 'textarea',
+          label: 'Elementos a evitar',
+          helpText: '¿Existen elementos que quieren evitar?',
+          required: false,
+          order: 12
+        },
+        {
+          id: 'logo-applications',
+          type: 'textarea',
+          label: 'Lugares de uso',
+          helpText: '¿En qué lugares se usará el logo? (Ejemplo: redes sociales, web, packaging, papelería, uniformes, cartelería)',
+          required: true,
+          order: 13
         },
         {
           id: 'target-audience',
           type: 'textarea',
           label: 'Público objetivo',
-          helpText: '¿A quién se dirige su empresa? Describa su audiencia target',
+          helpText: '¿A qué tipo de cliente o usuario está dirigida la marca? ¿Qué emociones o sensaciones debería generar el logo en la audiencia?',
           required: true,
-          order: 3
+          order: 14
         },
         {
-          id: 'logo-style',
+          id: 'technical-requirements',
           type: 'textarea',
-          label: 'Estilo de logotipo deseado',
-          helpText: 'Describa el estilo que busca (moderno, clásico, minimalista, etc.)',
-          required: true,
-          order: 4
-        },
-        {
-          id: 'color-preferences',
-          type: 'textarea',
-          label: 'Preferencias de color',
-          helpText: 'Indique colores que le gusten o que representen su marca',
+          label: 'Requisitos técnicos',
+          helpText: '¿Existen requisitos técnicos o restricciones? ¿Hay un plazo de entrega definido? ¿Tienen un presupuesto estimado para el proyecto?',
           required: false,
-          order: 5
-        },
-        {
-          id: 'inspiration-files',
-          type: 'file',
-          label: 'Archivos de inspiración',
-          helpText: 'Suba imágenes, logos o referencias que le inspiren',
-          required: false,
-          order: 6,
-          properties: {
-            accept: ['image/jpeg', 'image/png', 'application/pdf'],
-            multiple: true,
-            maxFiles: 5
-          }
+          order: 15
         }
       ],
       createdById: superadmin.id
@@ -158,57 +226,94 @@ async function main() {
       description: 'Plantilla para proyectos de diseño general y materiales gráficos',
       fields: [
         {
-          id: 'project-name',
-          type: 'text',
-          label: 'Nombre del proyecto',
-          helpText: 'Indique el nombre o título del proyecto de diseño',
+          id: 'main-objective',
+          type: 'textarea',
+          label: 'Objetivo principal',
+          helpText: '¿Cuál es el objetivo principal de la pieza?',
           required: true,
           order: 1
         },
         {
-          id: 'project-type',
-          type: 'text',
-          label: 'Tipo de proyecto',
-          helpText: 'Ej: Folleto, tarjetas, packaging, web, etc.',
+          id: 'target-audience',
+          type: 'textarea',
+          label: 'Público objetivo',
+          helpText: '¿Cuál es el público objetivo al que estará dirigida la comunicación?',
           required: true,
           order: 2
         },
         {
-          id: 'project-objectives',
+          id: 'main-message',
           type: 'textarea',
-          label: 'Objetivos del proyecto',
-          helpText: '¿Qué busca lograr con este diseño?',
+          label: 'Mensaje principal',
+          helpText: '¿Qué mensaje principal debe transmitir la pieza? (Puntos clave o ideas centrales)',
           required: true,
           order: 3
         },
         {
-          id: 'design-specifications',
+          id: 'related-campaign',
           type: 'textarea',
-          label: 'Especificaciones técnicas',
-          helpText: 'Dimensiones, formatos, cantidad, etc.',
-          required: true,
+          label: 'Relación con productos/servicios',
+          helpText: '¿Se relaciona con algún producto, servicio o campaña específica?',
+          required: false,
           order: 4
         },
         {
-          id: 'content-text',
+          id: 'brand-elements',
           type: 'textarea',
-          label: 'Contenido y textos',
-          helpText: 'Proporcione todos los textos que deben incluirse',
+          label: 'Elementos de marca',
+          helpText: 'Adjuntar elementos de marca previos útiles para el diseño (Ejemplo: logos, manual de identidad, presentaciones, colores, tipografías)',
           required: false,
-          order: 5
+          order: 5,
+          allowAttachments: true
         },
         {
-          id: 'reference-materials',
-          type: 'file',
-          label: 'Materiales de referencia',
-          helpText: 'Suba logos, imágenes, documentos de marca, etc.',
+          id: 'style-references',
+          type: 'textarea',
+          label: 'Referencias estilísticas',
+          helpText: 'Hay referencias estilísticas que sirvan de inspiración? (Adjuntar ejemplos)',
           required: false,
           order: 6,
-          properties: {
-            accept: ['image/jpeg', 'image/png', 'application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'],
-            multiple: true,
-            maxFiles: 10
-          }
+          allowAttachments: true
+        },
+        {
+          id: 'style-restrictions',
+          type: 'textarea',
+          label: 'Restricciones de estilo',
+          helpText: '¿Existen restricciones de estilo o elementos que se deben evitar? (Ejemplo: colores, tipografías, imágenes específicas)',
+          required: false,
+          order: 7
+        },
+        {
+          id: 'usage-context',
+          type: 'textarea',
+          label: 'Contexto de uso',
+          helpText: '¿Dónde se usará la pieza? (Digital, impreso o ambos)',
+          required: true,
+          order: 8
+        },
+        {
+          id: 'format-specifications',
+          type: 'textarea',
+          label: 'Especificaciones de formato',
+          helpText: '¿Cuáles son las dimensiones o formatos requeridos? Si es impreso: ¿Tamaño, técnica de impresión y tipo de papel o material? Si es digital: ¿Plataforma o medio donde se publicará? (Ejemplo: redes sociales, email marketing, sitio web, etc.)',
+          required: true,
+          order: 9
+        },
+        {
+          id: 'additional-specifications',
+          type: 'textarea',
+          label: 'Especificaciones adicionales',
+          helpText: '¿Existen especificaciones adicionales? (Ejemplo: márgenes, troqueles, plegados, adaptaciones para diferentes formatos)',
+          required: false,
+          order: 10
+        },
+        {
+          id: 'budget-timeline-restrictions',
+          type: 'textarea',
+          label: 'Presupuesto, tiempo y restricciones',
+          helpText: '¿Existe un presupuesto estimado para el proyecto? ¿Tienen un tiempo límite para la entrega ¿Hay restricciones o limitaciones que debamos considerar?',
+          required: false,
+          order: 11
         }
       ],
       createdById: superadmin.id
@@ -229,70 +334,130 @@ async function main() {
           id: 'brand-name',
           type: 'text',
           label: 'Nombre de la marca',
-          helpText: 'Nombre oficial de la marca o empresa',
+          helpText: 'Nombre de la marca',
           required: true,
           order: 1
         },
         {
-          id: 'brand-values',
+          id: 'brand-history',
           type: 'textarea',
-          label: 'Valores de marca',
-          helpText: '¿Cuáles son los valores fundamentales de su marca?',
+          label: 'Historia breve',
+          helpText: '¿Cómo nació la marca? ¿Qué camino ha recorrido hasta ahora en el mercado?',
           required: true,
           order: 2
+        },
+        {
+          id: 'brand-perception',
+          type: 'textarea',
+          label: 'Percepción actual y futura',
+          helpText: 'Si la marca tiene trayectoria ¿Cómo crees que es percibida actualmente la marca? (Fortalezas y debilidades según clientes y competencia) y cómo te gustaría que fuera percibida en el futuro? (Valores, emociones y sensaciones que debe transmitir)',
+          required: true,
+          order: 3
         },
         {
           id: 'brand-personality',
           type: 'textarea',
           label: 'Personalidad de marca',
-          helpText: 'Si su marca fuera una persona, ¿cómo sería?',
-          required: true,
-          order: 3
-        },
-        {
-          id: 'competitive-landscape',
-          type: 'textarea',
-          label: 'Competencia',
-          helpText: '¿Quiénes son sus principales competidores?',
+          helpText: 'Si la marca fuera una persona, ¿cómo sería? (Personalidad, tono de voz, actitudes)',
           required: true,
           order: 4
         },
         {
-          id: 'brand-positioning',
+          id: 'visual-associations',
           type: 'textarea',
-          label: 'Posicionamiento deseado',
-          helpText: '¿Cómo quiere que su marca sea percibida?',
+          label: 'Asociaciones visuales',
+          helpText: '¿Qué colores, formas o imágenes asocias con la marca?',
           required: true,
           order: 5
         },
         {
-          id: 'visual-preferences',
+          id: 'brand-differentiators',
           type: 'textarea',
-          label: 'Preferencias visuales',
-          helpText: 'Describa el estilo visual que busca para su marca',
-          required: false,
+          label: 'Diferenciadores únicos',
+          helpText: '¿Qué hace única a la marca? (Diferenciadores clave frente a la competencia)',
+          required: true,
           order: 6
         },
         {
-          id: 'brand-applications',
+          id: 'customer-motivation',
           type: 'textarea',
-          label: 'Aplicaciones de marca',
-          helpText: '¿Dónde se usará la marca? (web, impreso, packaging, etc.)',
+          label: 'Motivación del cliente',
+          helpText: '¿Qué motiva a los clientes a elegir la marca sobre otras opciones?',
           required: true,
           order: 7
         },
         {
-          id: 'brand-assets',
-          type: 'file',
-          label: 'Assets existentes',
-          helpText: 'Suba logos actuales, materiales existentes, referencias',
+          id: 'brand-benefits',
+          type: 'textarea',
+          label: 'Beneficios principales',
+          helpText: '¿Cuáles son los beneficios principales que la marca comunica y cuáles debería comunicar?',
+          required: true,
+          order: 8
+        },
+        {
+          id: 'target-lifestyle',
+          type: 'textarea',
+          label: 'Público objetivo',
+          helpText: '¿A quién va dirigida la marca? ¿Cómo es el estilo de vida de sus clientes ideales? (Hábitos, intereses, lugares que frecuentan)',
+          required: true,
+          order: 9
+        },
+        {
+          id: 'key-concept',
+          type: 'textarea',
+          label: 'Concepto clave',
+          helpText: '¿Con qué palabra o concepto clave debería ser asociada la marca en la mente del consumidor?',
+          required: true,
+          order: 10
+        },
+        {
+          id: 'competitors',
+          type: 'textarea',
+          label: 'Competidores principales',
+          helpText: '¿Quiénes son los principales competidores? (Directos e indirectos)',
+          required: true,
+          order: 11
+        },
+        {
+          id: 'admired-brands',
+          type: 'textarea',
+          label: 'Marcas que admiran',
+          helpText: '¿Qué marcas admiran y por qué? (Pueden ser de cualquier sector)',
           required: false,
-          order: 8,
-          properties: {
-            accept: ['image/jpeg', 'image/png', 'application/pdf', 'application/zip'],
-            multiple: true,
-            maxFiles: 15
-          }
+          order: 12
+        },
+        {
+          id: 'brand-applications',
+          type: 'textarea',
+          label: 'Lugares y formatos de uso',
+          helpText: '¿En qué lugares y formatos se usará la identidad de la marca? (Redes sociales, packaging, papelería, sitio web, etc.)',
+          required: true,
+          order: 13
+        },
+        {
+          id: 'design-limitations',
+          type: 'textarea',
+          label: 'Limitaciones del diseño',
+          helpText: '¿Existen limitaciones o restricciones para el diseño? (Ejemplo: colores a evitar, normativas, etc.)',
+          required: false,
+          order: 14
+        },
+        {
+          id: 'budget-timeline',
+          type: 'textarea',
+          label: 'Presupuesto y timeline',
+          helpText: '¿Existe un presupuesto estimado para el proyecto? ¿Tienen una fecha límite para su desarrollo?',
+          required: false,
+          order: 15
+        },
+        {
+          id: 'visual-references',
+          type: 'textarea',
+          label: 'Referencias visuales',
+          helpText: 'Adjuntar imágenes o referencias visuales que tengan el estilo que buscan para la marca.',
+          required: false,
+          order: 16,
+          allowAttachments: true
         }
       ],
       createdById: superadmin.id
