@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "RC Starter Kit",
+  title: "Tinta Agency",
   description: "Kit de inicio para aplicaciones React con Next.js",
 };
 

@@ -26,7 +26,7 @@ export async function sendWorkspaceInvitationEmail(input: SendInvitationEmailInp
   try {
     const validatedInput = sendInvitationEmailSchema.parse(input)
     
-    const appName = process.env.APP_NAME || "RC Starter Kit"
+    const appName = process.env.APP_NAME || "Tinta Agency"
     const fromEmail = process.env.RESEND_FROM_EMAIL || "notifications@raphauy.dev"
     
     const { data, error } = await resend.emails.send({
@@ -191,7 +191,7 @@ export async function sendOtpEmail(input: SendOtpEmailInput) {
   try {
     const validatedInput = sendOtpEmailSchema.parse(input)
     
-    const appName = process.env.APP_NAME || "RC Starter Kit"
+    const appName = process.env.APP_NAME || "Tinta Agency"
     const fromEmail = process.env.RESEND_FROM_EMAIL || "notifications@raphauy.dev"
     
     const { data, error } = await resend.emails.send({

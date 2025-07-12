@@ -25,7 +25,7 @@ export default function WorkspaceInvitationEmail({
   inviterName = "Juan Pérez",
   workspaceName = "Mi Workspace",
   acceptUrl = "https://ejemplo.com/invite/token123",
-  appName = "RC Starter Kit",
+  appName = "Tinta Agency",
   expiresInDays = 7
 }: WorkspaceInvitationEmailProps) {
   return (
