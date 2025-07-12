@@ -22,9 +22,6 @@ export async function middleware(request: NextRequest) {
       : 'authjs.session-token'
   })
   
-  console.log("Middleware - Token found:", !!token)
-  console.log("Middleware - Token content:", token ? { id: token.id, email: token.email, role: token.role } : null)
-  
   const isLoggedIn = !!token
   const userRole = token?.role as string || ""
 
