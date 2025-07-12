@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { getWorkspaceBySlug } from '@/services/workspace-service'
 import { getFormsByWorkspace } from '@/services/form-service'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -40,7 +41,14 @@ export async function FormsList({ workspaceSlug }: FormsListProps) {
           <CardHeader>
             <div className="flex justify-between items-start">
               <div className="space-y-1">
-                <CardTitle className="text-lg">{form.name}</CardTitle>
+                <CardTitle className="text-lg">
+                  <Link 
+                    href={`/w/${workspaceSlug}/forms/${form.id}`}
+                    className="hover:text-primary transition-colors"
+                  >
+                    {form.name}
+                  </Link>
+                </CardTitle>
                 {form.description && (
                   <CardDescription>{form.description}</CardDescription>
                 )}

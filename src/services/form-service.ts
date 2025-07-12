@@ -49,6 +49,9 @@ export type FormWithWorkspaceUsers = Form & {
       user: Pick<User, 'id' | 'name' | 'email'>
     }>
   }
+  _count: {
+    responses: number
+  }
 }
 
 /**
@@ -149,6 +152,9 @@ export async function getFormByToken(token: string): Promise<FormWithWorkspaceUs
             }
           }
         }
+      },
+      _count: {
+        select: { responses: true }
       }
     }
   })

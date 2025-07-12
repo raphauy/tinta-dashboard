@@ -4,6 +4,8 @@ import { revalidatePath } from "next/cache"
 import { submitFormResponse as submitResponse } from "@/services/form-response-service"
 import { getFormByToken } from "@/services/form-service"
 import { sendFormSubmissionNotification } from "@/services/email-service"
+import { getClientIP } from "@/lib/get-client-ip"
+import { prisma } from "@/lib/prisma"
 import { put } from "@vercel/blob"
 import { type FormField } from "@/types/form-field"
 
@@ -18,7 +20,19 @@ export async function submitFormResponse(formId: string, formData: Record<string
       throw new Error('Formulario no encontrado o inactivo')
     }
 
-    // 2. Procesar archivos si existen
+    // 2. Verificar si ya hay respuestas y no se permiten múltiples envíos
+    const responseCount = await prisma.formResponse.count({
+      where: { formId: form.id }
+    })
+    
+    if (responseCount > 0 && !form.allowEdits) {
+      throw new Error('Este formulario ya no acepta más respuestas')
+    }
+    
+    // 3. Obtener IP para el registro
+    const clientIP = await getClientIP()
+
+    // 3. Procesar archivos si existen
     const processedFiles: Array<{
       fieldName: string
       fileName: string
@@ -84,7 +98,7 @@ export async function submitFormResponse(formId: string, formData: Record<string
       formId: form.id, // Usar el ID real del formulario
       data: cleanData,
       files: processedFiles,
-      submitterIP: undefined // TODO: Obtener IP del request si es necesario
+      submitterIP: clientIP // IP obtenida al inicio de la función
     })
 
     // 5. Enviar notificaciones por email a todos los miembros del workspace

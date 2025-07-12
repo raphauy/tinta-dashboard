@@ -1,7 +1,7 @@
 import { Suspense } from 'react'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, Edit, Power, PowerOff, BarChart3 } from 'lucide-react'
+import { ArrowLeft, Edit, Power, PowerOff, BarChart3, Settings } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -79,6 +79,12 @@ async function FormDetailContent({ workspaceSlug, formId }: { workspaceSlug: str
             <Link href={`/w/${workspaceSlug}/forms/${form.id}/edit`}>
               <Edit className="h-4 w-4 mr-2" />
               Editar
+            </Link>
+          </Button>
+          <Button variant="outline" asChild>
+            <Link href={`/w/${workspaceSlug}/forms/${form.id}/share`}>
+              <Settings className="h-4 w-4 mr-2" />
+              Configurar
             </Link>
           </Button>
           <Button variant="outline" asChild>

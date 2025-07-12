@@ -1,6 +1,8 @@
 import { notFound } from "next/navigation"
 import { getFormByToken, isFormActiveByToken } from "@/services/form-service"
 import { PublicFormRenderer } from "./public-form-renderer"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { CheckCircle, MessageCircle } from "lucide-react"
 
 interface PublicFormPageProps {
   params: Promise<{
@@ -21,6 +23,10 @@ export default async function PublicFormPage({ params }: PublicFormPageProps) {
     notFound()
   }
 
+  // Verificar si ya se enviaron respuestas y no se permiten múltiples envíos
+  const hasAnyResponses = form._count?.responses > 0
+  const shouldBlockSubmission = hasAnyResponses && !form.allowEdits
+
   return (
     <div className="max-w-4xl mx-auto">
       {/* Header del formulario */}
@@ -38,13 +44,53 @@ export default async function PublicFormPage({ params }: PublicFormPageProps) {
             <strong>Cliente:</strong> {form.workspace.name}
           </p>
           <p className="text-sm text-muted-foreground">
-            Completa todos los campos obligatorios para enviar tu información.
+            {shouldBlockSubmission 
+              ? "Este formulario ya no acepta más respuestas."
+              : "Completa todos los campos obligatorios para enviar tu información."
+            }
           </p>
         </div>
       </div>
 
-      {/* Renderizador del formulario */}
-      <PublicFormRenderer form={form} />
+      {/* Mostrar mensaje de ya enviado o el formulario */}
+      {shouldBlockSubmission ? (
+        <Card className="max-w-2xl mx-auto">
+          <CardHeader className="text-center">
+            <div className="flex justify-center mb-4">
+              <CheckCircle className="h-16 w-16 text-green-500" />
+            </div>
+            <CardTitle className="text-2xl">Formulario cerrado</CardTitle>
+            <CardDescription className="text-lg">
+              Este formulario ya no acepta más respuestas.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="text-center space-y-4">
+            <div className="p-4 bg-green-50 dark:bg-green-950/30 rounded-lg border border-green-200 dark:border-green-900">
+              <div className="flex items-center gap-3 justify-center">
+                <MessageCircle className="h-5 w-5 text-green-600 dark:text-green-500" />
+                <p className="text-green-800 dark:text-green-200 font-medium">
+                  Tinta ya está procesando las respuestas recibidas
+                </p>
+              </div>
+            </div>
+            
+            <div className="pt-4 border-t text-sm text-muted-foreground">
+              <p>
+                Si tienes preguntas o necesitas información adicional, 
+                contáctanos en{" "}
+                <a 
+                  href="mailto:contacto@tinta.wine" 
+                  className="text-primary hover:underline"
+                >
+                  contacto@tinta.wine
+                </a>
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      ) : (
+        <PublicFormRenderer form={form} />
+      )}
     </div>
   )
 }

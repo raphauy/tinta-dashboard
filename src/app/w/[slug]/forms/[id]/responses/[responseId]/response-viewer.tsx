@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import NextImage from 'next/image'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -19,7 +20,11 @@ import {
   FileText, 
   Calendar,
   MoreHorizontal,
-  ExternalLink
+  ExternalLink,
+  Image,
+  FileSpreadsheet,
+  FileCode,
+  FileArchive
 } from "lucide-react"
 import { type ResponseWithForm } from "@/services/form-response-service"
 import { updateResponseStatusAction } from "../actions"
@@ -49,8 +54,34 @@ const statusConfig = {
   }
 } as const
 
+const getFileIcon = (fileType: string) => {
+  if (fileType.startsWith('image/')) return Image
+  if (fileType.includes('pdf')) return FileText
+  if (fileType.includes('spreadsheet') || fileType.includes('excel')) return FileSpreadsheet
+  if (fileType.includes('word') || fileType.includes('document')) return FileText
+  if (fileType.includes('zip') || fileType.includes('compressed')) return FileArchive
+  if (fileType.includes('code') || fileType.includes('javascript') || fileType.includes('json')) return FileCode
+  return FileText
+}
+
+const getFileColor = (fileType: string) => {
+  if (fileType.startsWith('image/')) return 'bg-purple-100 dark:bg-purple-900 text-purple-600'
+  if (fileType.includes('pdf')) return 'bg-red-100 dark:bg-red-900 text-red-600'
+  if (fileType.includes('spreadsheet') || fileType.includes('excel')) return 'bg-green-100 dark:bg-green-900 text-green-600'
+  if (fileType.includes('word') || fileType.includes('document')) return 'bg-blue-100 dark:bg-blue-900 text-blue-600'
+  if (fileType.includes('zip') || fileType.includes('compressed')) return 'bg-yellow-100 dark:bg-yellow-900 text-yellow-600'
+  return 'bg-gray-100 dark:bg-gray-900 text-gray-600'
+}
+
+const formatFileSize = (bytes: number) => {
+  if (bytes < 1024) return `${bytes} B`
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`
+  return `${(bytes / 1024 / 1024).toFixed(2)} MB`
+}
+
 export function ResponseViewer({ response }: ResponseViewerProps) {
   const [loadingStatusChange, setLoadingStatusChange] = useState(false)
+  const [previewImage, setPreviewImage] = useState<string | null>(null)
 
   const handleStatusChange = async (newStatus: ResponseStatus) => {
     setLoadingStatusChange(true)
@@ -238,46 +269,91 @@ export function ResponseViewer({ response }: ResponseViewerProps) {
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              {response.files.map((file) => (
-                <div 
-                  key={file.id}
-                  className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-900 rounded-lg"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="h-10 w-10 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center">
-                      <FileText className="h-5 w-5 text-blue-600" />
-                    </div>
-                    <div>
-                      <h4 className="font-medium text-sm">{file.fileName}</h4>
-                      <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                        <span>Campo: {file.fieldName}</span>
-                        <span>•</span>
-                        <span>{(file.fileSize / 1024 / 1024).toFixed(2)} MB</span>
-                        <span>•</span>
-                        <span>{file.fileType}</span>
+              {response.files.map((file) => {
+                const FileIcon = getFileIcon(file.fileType)
+                const fileColor = getFileColor(file.fileType)
+                const isImage = file.fileType.startsWith('image/')
+                
+                return (
+                  <div 
+                    key={file.id}
+                    className="p-4 bg-gray-50 dark:bg-gray-900 rounded-lg space-y-3"
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className={`h-10 w-10 rounded-lg flex items-center justify-center ${fileColor}`}>
+                          <FileIcon className="h-5 w-5" />
+                        </div>
+                        <div>
+                          <h4 className="font-medium text-sm">{file.fileName}</h4>
+                          <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                            <span>Campo: {file.fieldName}</span>
+                            <span>•</span>
+                            <span>{formatFileSize(file.fileSize)}</span>
+                            <span>•</span>
+                            <span>{file.fileType}</span>
+                            <span>•</span>
+                            <span suppressHydrationWarning>
+                              {new Date(file.uploadedAt).toLocaleDateString('es-ES')}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-center gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleFileDownload(file.id, file.fileName)}
+                        >
+                          <Download className="h-4 w-4 mr-1" />
+                          Descargar
+                        </Button>
+                        {isImage ? (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => setPreviewImage(file.fileUrl)}
+                          >
+                            <Eye className="h-4 w-4" />
+                          </Button>
+                        ) : (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleFilePreview(file.fileUrl)}
+                          >
+                            <ExternalLink className="h-4 w-4" />
+                          </Button>
+                        )}
                       </div>
                     </div>
+                    
+                    {isImage && previewImage === file.fileUrl && (
+                      <div className="mt-3 p-3 bg-white dark:bg-gray-800 rounded-lg border">
+                        <div className="relative">
+                          <NextImage 
+                            src={file.fileUrl} 
+                            alt={file.fileName}
+                            className="max-w-full h-auto rounded-lg"
+                            width={800}
+                            height={400}
+                            style={{ maxHeight: '400px', objectFit: 'contain' }}
+                          />
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="absolute top-2 right-2 bg-white/80 dark:bg-black/80"
+                            onClick={() => setPreviewImage(null)}
+                          >
+                            Cerrar
+                          </Button>
+                        </div>
+                      </div>
+                    )}
                   </div>
-                  
-                  <div className="flex items-center gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleFileDownload(file.id, file.fileName)}
-                    >
-                      <Download className="h-4 w-4 mr-1" />
-                      Descargar
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => handleFilePreview(file.fileUrl)}
-                    >
-                      <ExternalLink className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
-              ))}
+                )
+              })}
             </div>
           </CardContent>
         </Card>

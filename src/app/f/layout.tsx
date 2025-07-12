@@ -13,7 +13,7 @@ export default function PublicFormLayout({
   children: React.ReactNode
 }) {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background flex flex-col">
       <ThemeProvider
         attribute="class"
         defaultTheme="system"
@@ -37,12 +37,12 @@ export default function PublicFormLayout({
         </header>
 
         {/* Main content */}
-        <main className="container mx-auto px-4 py-8">
+        <main className="container mx-auto px-4 py-8 flex-1">
           {children}
         </main>
 
         {/* Footer */}
-        <footer className="border-t bg-card mt-16">
+        <footer className="border-t bg-card mt-auto">
           <div className="container mx-auto px-4 py-6">
             <div className="text-center">
               <p className="text-sm text-muted-foreground">
