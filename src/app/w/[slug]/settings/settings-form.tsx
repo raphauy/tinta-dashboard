@@ -5,7 +5,8 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { Settings, AlertTriangle } from "lucide-react"
+import { WorkspaceImageUpload } from "@/components/workspace-image-upload"
+import { Settings, AlertTriangle, ImageIcon } from "lucide-react"
 import { notFound, redirect } from "next/navigation"
 
 interface SettingsFormProps {
@@ -79,6 +80,28 @@ export async function SettingsForm({ slug }: SettingsFormProps) {
               Guardar Cambios
             </Button>
           </div>
+        </CardContent>
+      </Card>
+
+      {/* Imagen del Workspace */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center space-x-2">
+            <ImageIcon className="h-5 w-5" />
+            <span>Imagen del Workspace</span>
+          </CardTitle>
+          <CardDescription>
+            Personaliza la imagen que representa a este workspace
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <WorkspaceImageUpload
+            workspace={{
+              id: workspace.id,
+              name: workspace.name,
+              image: workspace.image
+            }}
+          />
         </CardContent>
       </Card>
 

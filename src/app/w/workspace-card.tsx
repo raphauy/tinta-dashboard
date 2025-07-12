@@ -1,8 +1,9 @@
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { WorkspaceAvatar } from "@/components/workspace-avatar"
 import { Workspace, WorkspaceRole } from "@prisma/client"
-import { Building2, Users, ArrowRight, Shield } from "lucide-react"
+import { Users, ArrowRight, Shield } from "lucide-react"
 import Link from "next/link"
 
 interface WorkspaceCardProps {
@@ -34,35 +35,43 @@ export function WorkspaceCard({ workspace, userRole, isSuperadmin = false }: Wor
   }
 
   return (
-    <Card className="hover:shadow-md transition-shadow">
+    <Card className="hover:shadow-md transition-shadow h-full flex flex-col">
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between">
-          <div className="flex items-center space-x-2">
-            <Building2 className="h-5 w-5 text-muted-foreground" />
-            <CardTitle className="text-lg">{workspace.name}</CardTitle>
+          <div className="flex items-center space-x-3">
+            <WorkspaceAvatar 
+              workspace={workspace}
+              size="lg"
+            />
+            <div className="flex-1">
+              <CardTitle className="text-lg">{workspace.name}</CardTitle>
+              <div className="text-muted-foreground/60 text-sm mt-1">
+                /{workspace.slug}
+              </div>
+            </div>
           </div>
           {getRoleBadge(userRole, isSuperadmin)}
         </div>
-        {workspace.description && (
-          <p className="text-sm text-muted-foreground mt-2">
-            {workspace.description}
-          </p>
-        )}
       </CardHeader>
       
-      <CardContent>
-        <div className="flex items-center space-x-4 text-sm text-muted-foreground">
-          <div className="flex items-center space-x-1">
-            <Users className="h-4 w-4" />
-            <span>Workspace</span>
-          </div>
-          <div className="text-muted-foreground/60">
-            /{workspace.slug}
-          </div>
+      <CardContent className="flex-1 pt-0">
+        {workspace.description ? (
+          <p className="text-sm text-muted-foreground line-clamp-3">
+            {workspace.description}
+          </p>
+        ) : (
+          <p className="text-sm text-muted-foreground/50 italic">
+            Sin descripción
+          </p>
+        )}
+        
+        <div className="flex items-center space-x-1 text-xs text-muted-foreground mt-3">
+          <Users className="h-3 w-3" />
+          <span>Workspace</span>
         </div>
       </CardContent>
       
-      <CardFooter>
+      <CardFooter className="pt-3">
         <Button asChild className="w-full">
           <Link href={`/w/${workspace.slug}`}>
             Acceder

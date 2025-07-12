@@ -2,6 +2,7 @@ import { notFound } from "next/navigation"
 import { getFormByToken, isFormActiveByToken } from "@/services/form-service"
 import { PublicFormRenderer } from "./public-form-renderer"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { WorkspaceAvatar } from "@/components/workspace-avatar"
 import { CheckCircle, MessageCircle } from "lucide-react"
 
 interface PublicFormPageProps {
@@ -40,9 +41,17 @@ export default async function PublicFormPage({ params }: PublicFormPageProps) {
           </p>
         )}
         <div className="mt-4 p-4 bg-muted/50 rounded-lg">
-          <p className="text-sm text-muted-foreground">
-            <strong>Cliente:</strong> {form.workspace.name}
-          </p>
+          <div className="flex items-center space-x-3 mb-2">
+            <WorkspaceAvatar 
+              workspace={form.workspace}
+              size="md"
+            />
+            <div>
+              <p className="text-sm font-medium text-foreground">
+                {form.workspace.name}
+              </p>
+            </div>
+          </div>
           <p className="text-sm text-muted-foreground">
             {shouldBlockSubmission 
               ? "Este formulario ya no acepta más respuestas."
@@ -74,8 +83,20 @@ export default async function PublicFormPage({ params }: PublicFormPageProps) {
               </div>
             </div>
             
-            <div className="pt-4 border-t text-sm text-muted-foreground">
-              <p>
+            <div className="pt-4 border-t">
+              <div className="flex items-center justify-center space-x-3 mb-3">
+                <WorkspaceAvatar 
+                  workspace={form.workspace}
+                  size="lg"
+                />
+                <div className="text-center">
+                  <p className="text-sm font-medium text-foreground">
+                    {form.workspace.name}
+                  </p>
+                </div>
+              </div>
+              
+              <p className="text-sm text-muted-foreground">
                 Si tienes preguntas o necesitas información adicional, 
                 contáctanos en{" "}
                 <a 

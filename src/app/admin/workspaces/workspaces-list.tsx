@@ -7,6 +7,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { WorkspaceAvatar } from "@/components/workspace-avatar"
 import { Users } from "lucide-react"
 import { getAllWorkspaces } from "@/services/workspace-service"
 import { WorkspaceActionsClient } from "./workspace-actions-client"
@@ -49,13 +50,19 @@ export async function WorkspacesList() {
               workspaces.map((workspace) => (
                 <TableRow key={workspace.id}>
                   <TableCell className="font-medium">
-                    <div className="space-y-1">
-                      <div className="font-medium">{workspace.name}</div>
-                      {workspace.description && (
-                        <div className="text-sm text-muted-foreground">
-                          {workspace.description}
-                        </div>
-                      )}
+                    <div className="flex items-center space-x-3">
+                      <WorkspaceAvatar 
+                        workspace={workspace}
+                        size="md"
+                      />
+                      <div className="space-y-1">
+                        <div className="font-medium">{workspace.name}</div>
+                        {workspace.description && (
+                          <div className="text-sm text-muted-foreground">
+                            {workspace.description}
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </TableCell>
                   <TableCell>

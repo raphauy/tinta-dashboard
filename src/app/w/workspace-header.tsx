@@ -13,6 +13,8 @@ import { LogOut, Settings, User } from "lucide-react"
 import { signOut } from "next-auth/react"
 import Link from "next/link"
 import { ThemeToggle } from "@/components/theme-toggle"
+import { WorkspaceSelector } from "@/components/workspace-selector"
+import type { Workspace } from "@prisma/client"
 
 interface WorkspaceHeaderProps {
   user: {
@@ -22,9 +24,12 @@ interface WorkspaceHeaderProps {
     role: string
     image?: string | null
   }
+  userWorkspaces?: {
+    workspace: Workspace
+  }[]
 }
 
-export function WorkspaceHeader({ user }: WorkspaceHeaderProps) {
+export function WorkspaceHeader({ user, userWorkspaces }: WorkspaceHeaderProps) {
   const getInitials = (name: string | null, email: string) => {
     if (name) {
       return name
@@ -48,23 +53,31 @@ export function WorkspaceHeader({ user }: WorkspaceHeaderProps) {
             </Link>
           </div>
 
-          {/* Navigation */}
-          <nav className="hidden md:flex items-center space-x-6">
-            <Link 
-              href="/w" 
-              className="text-muted-foreground hover:text-foreground transition-colors"
-            >
-              {user.role === "superadmin" ? "Todos los Workspaces" : "Mis Workspaces"}
-            </Link>
-            {user.role === "superadmin" && (
-              <Link 
-                href="/admin" 
-                className="text-blue-600 hover:text-blue-800 transition-colors font-medium"
-              >
-                Panel Admin
-              </Link>
+          {/* Centro - Workspace Selector o Navigation */}
+          <div className="flex-1 flex justify-center">
+            {userWorkspaces && userWorkspaces.length > 0 ? (
+              <WorkspaceSelector
+                userWorkspaces={userWorkspaces}
+              />
+            ) : (
+              <nav className="hidden md:flex items-center space-x-6">
+                <Link 
+                  href="/w" 
+                  className="text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  {user.role === "superadmin" ? "Todos los Workspaces" : "Mis Workspaces"}
+                </Link>
+                {user.role === "superadmin" && (
+                  <Link 
+                    href="/admin" 
+                    className="text-blue-600 hover:text-blue-800 transition-colors font-medium"
+                  >
+                    Panel Admin
+                  </Link>
+                )}
+              </nav>
             )}
-          </nav>
+          </div>
 
           {/* Actions */}
           <div className="flex items-center space-x-2">
