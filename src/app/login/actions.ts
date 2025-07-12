@@ -105,7 +105,6 @@ export async function verifyOtpAction(email: string, otp: string): Promise<AuthR
     }
 
     // Si llegamos aquí, la autenticación fue exitosa
-    // El middleware se encargará de la redirección
     console.log("OTP verification successful")
     return { success: true }
   } catch (error) {
