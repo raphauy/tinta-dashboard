@@ -34,6 +34,8 @@ export type ResponseWithFiles = FormResponse & {
   files: FormResponseFile[]
 }
 
+export type FormResponseWithRelations = ResponseWithFiles
+
 export type ResponseWithForm = FormResponse & {
   files: FormResponseFile[]
   form: Form & {
@@ -130,14 +132,21 @@ export async function getFormResponseById(id: string): Promise<ResponseWithForm 
 export async function updateResponseStatus(
   id: string, 
   status: ResponseStatus
-): Promise<ResponseWithFiles> {
+): Promise<ResponseWithForm> {
   const validated = updateResponseStatusSchema.parse({ status })
   
   return await prisma.formResponse.update({
     where: { id },
     data: { status: validated.status },
     include: {
-      files: true
+      files: true,
+      form: {
+        include: {
+          workspace: {
+            select: { id: true, name: true, slug: true }
+          }
+        }
+      }
     }
   })
 }

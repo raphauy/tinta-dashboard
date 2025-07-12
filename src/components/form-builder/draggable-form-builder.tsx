@@ -21,14 +21,27 @@ import { Plus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { DraggableField } from './draggable-field'
-import { type FormField } from '@/services/template-service'
+import { type FormField } from '@/types/form-field'
 
 interface DraggableFormBuilderProps {
   fields: FormField[]
   onFieldsChange: (fields: FormField[]) => void
+  title?: string
+  description?: string
+  emptyTitle?: string
+  emptyDescription?: string
+  addButtonText?: string
 }
 
-export function DraggableFormBuilder({ fields, onFieldsChange }: DraggableFormBuilderProps) {
+export function DraggableFormBuilder({ 
+  fields, 
+  onFieldsChange,
+  title = "Campos del Formulario",
+  description = "Arrastra los campos para reordenarlos. Haz clic para expandir y editar.",
+  emptyTitle = "Agrega campos para estructurar tu formulario",
+  emptyDescription = "Este formulario no tiene campos aún",
+  addButtonText = "Agregar campo"
+}: DraggableFormBuilderProps) {
   const [expandedFields, setExpandedFields] = useState<Set<string>>(new Set())
   const [newlyCreatedField, setNewlyCreatedField] = useState<string | null>(null)
   const [markedForDeletion, setMarkedForDeletion] = useState<Set<string>>(new Set())
@@ -73,7 +86,6 @@ export function DraggableFormBuilder({ fields, onFieldsChange }: DraggableFormBu
     )
     onFieldsChange(updatedFields)
   }
-  
 
   const handleDeleteField = (fieldId: string) => {
     const field = fields.find(f => f.id === fieldId)
@@ -176,15 +188,15 @@ export function DraggableFormBuilder({ fields, onFieldsChange }: DraggableFormBu
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Campos del Formulario</CardTitle>
+          <CardTitle>{title}</CardTitle>
           <CardDescription>
-            Agrega campos para estructurar tu plantilla
+            {emptyTitle}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="text-center py-6">
             <p className="text-sm text-muted-foreground mb-4">
-              Esta plantilla no tiene campos aún
+              {emptyDescription}
             </p>
             <Button type="button" onClick={() => handleAddField()}>
               <Plus className="mr-2 h-4 w-4" />
@@ -201,14 +213,14 @@ export function DraggableFormBuilder({ fields, onFieldsChange }: DraggableFormBu
       <CardHeader>
         <div className="flex items-center justify-between">
           <div>
-            <CardTitle>Campos del Formulario</CardTitle>
+            <CardTitle>{title}</CardTitle>
             <CardDescription>
-              Arrastra los campos para reordenarlos. Haz clic para expandir y editar.
+              {description}
             </CardDescription>
           </div>
           <Button type="button" onClick={() => handleAddField()} variant="outline">
             <Plus className="mr-2 h-4 w-4" />
-            Agregar campo
+            {addButtonText}
           </Button>
         </div>
       </CardHeader>

@@ -24,7 +24,9 @@ export async function middleware(request: NextRequest) {
 
   // Public routes (no authentication required)
   const publicRoutes = ["/login", "/", "/register"]
-  const isPublicRoute = publicRoutes.includes(nextUrl.pathname) || nextUrl.pathname.startsWith("/invite/")
+  const isPublicRoute = publicRoutes.includes(nextUrl.pathname) || 
+    nextUrl.pathname.startsWith("/invite/") || 
+    nextUrl.pathname.startsWith("/f/")
   
   if (isPublicRoute) {
     // Only redirect logged-in users from login and home pages

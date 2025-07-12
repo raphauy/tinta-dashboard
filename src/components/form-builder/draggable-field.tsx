@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Checkbox } from '@/components/ui/checkbox'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { type FormField } from '@/services/template-service'
+import { type FormField, FIELD_TYPE_CONFIG } from '@/types/form-field'
 
 interface DraggableFieldProps {
   field: FormField
@@ -51,9 +51,9 @@ export function DraggableField({
   }
 
   const fieldTypes = [
-    { value: 'text', label: 'Texto corto' },
-    { value: 'textarea', label: 'Texto largo' },
-    { value: 'file', label: 'Archivo' },
+    { value: 'text', label: FIELD_TYPE_CONFIG.text.label },
+    { value: 'textarea', label: FIELD_TYPE_CONFIG.textarea.label },
+    { value: 'file', label: FIELD_TYPE_CONFIG.file.label },
   ]
 
   return (

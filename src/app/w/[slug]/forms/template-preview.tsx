@@ -7,7 +7,8 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
 import { FileText, Upload, Eye, EyeOff } from 'lucide-react'
-import { type TemplateWithStats, type FormField } from '@/services/template-service'
+import { type TemplateWithStats } from '@/services/template-service'
+import { type FormField } from '@/types/form-field'
 import { useState } from 'react'
 
 interface TemplatePreviewProps {

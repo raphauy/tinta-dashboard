@@ -13,7 +13,8 @@ import { TemplateSelector } from '../template-selector'
 import { TemplatePreview } from '../template-preview'
 import { createFormFromTemplateAction } from '../actions'
 import { toast } from 'sonner'
-import { type TemplateWithStats, type FormField } from '@/services/template-service'
+import { type TemplateWithStats } from '@/services/template-service'
+import { type FormField } from '@/types/form-field'
 
 interface NewFormWizardProps {
   workspaceSlug: string

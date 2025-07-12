@@ -10,10 +10,11 @@ import { Textarea } from '@/components/ui/textarea'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Switch } from '@/components/ui/switch'
-import { updateFormAction } from './actions'
+import { updateFormAction, updateFormFieldsAction } from './actions'
 import { toast } from 'sonner'
 import { type FormWithRelations } from '@/services/form-service'
-import { type FormField } from '@/services/template-service'
+import { type FormField } from '@/types/form-field'
+import { DraggableFormBuilder } from '@/components/form-builder/draggable-form-builder'
 
 interface FormEditFormProps {
   form: FormWithRelations
@@ -26,8 +27,16 @@ export function FormEditForm({ form, workspaceSlug }: FormEditFormProps) {
   const [description, setDescription] = useState(form.description || '')
   const [isActive, setIsActive] = useState(form.isActive)
   const [isSubmitting, setIsSubmitting] = useState(false)
-
-  const fields = form.fields as FormField[]
+  const [fields, setFields] = useState<FormField[]>(() => {
+    const formFields = form.fields as FormField[] || []
+    // Asegurar que todos los campos tienen IDs únicos
+    return formFields.map((field, index) => ({
+      ...field,
+      id: field.id || `field-${Date.now()}-${index}`,
+      order: field.order ?? index
+    }))
+  })
+  const [isFieldsSubmitting, setIsFieldsSubmitting] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -56,6 +65,35 @@ export function FormEditForm({ form, workspaceSlug }: FormEditFormProps) {
       toast.error('Error al actualizar formulario')
     } finally {
       setIsSubmitting(false)
+    }
+  }
+
+  const handleSaveFields = async () => {
+    if (fields.length === 0) {
+      toast.error('Debe haber al menos un campo')
+      return
+    }
+
+    const invalidFields = fields.filter(field => !field.label.trim())
+    if (invalidFields.length > 0) {
+      toast.error('Todos los campos deben tener una etiqueta')
+      return
+    }
+
+    setIsFieldsSubmitting(true)
+
+    try {
+      const result = await updateFormFieldsAction(form.id, fields)
+
+      if (result.success) {
+        toast.success('Campos actualizados correctamente')
+      } else {
+        toast.error(result.error || 'Error al actualizar campos')
+      }
+    } catch {
+      toast.error('Error al actualizar campos')
+    } finally {
+      setIsFieldsSubmitting(false)
     }
   }
 
@@ -144,48 +182,53 @@ export function FormEditForm({ form, workspaceSlug }: FormEditFormProps) {
         </CardContent>
       </Card>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Información de la plantilla</CardTitle>
-          <CardDescription>
-            Los campos del formulario están basados en la plantilla seleccionada
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div>
-              <p className="text-sm font-medium text-muted-foreground">Plantilla base</p>
-              <p className="font-medium">{form.template?.name || 'Sin plantilla'}</p>
-            </div>
-            <div>
-              <p className="text-sm font-medium text-muted-foreground">Total de campos</p>
-              <p className="font-medium">{fields.length}</p>
-            </div>
-          </div>
+      <div className="space-y-4">
+        <DraggableFormBuilder
+          fields={fields}
+          onFieldsChange={setFields}
+          title="Campos del Formulario"
+          description="Arrastra los campos para reordenarlos. Edita cada campo haciendo clic para expandir."
+          emptyTitle="Agrega campos para estructurar tu formulario"
+          emptyDescription="Este formulario no tiene campos aún"
+        />
+        
+        <div className="flex justify-end gap-3">
+          <Button
+            type="button"
+            onClick={handleSaveFields}
+            disabled={isFieldsSubmitting}
+          >
+            <Save className="h-4 w-4 mr-2" />
+            {isFieldsSubmitting ? 'Guardando campos...' : 'Guardar campos'}
+          </Button>
+        </div>
+      </div>
 
-          <div className="pt-2 border-t">
-            <p className="text-sm font-medium mb-3">Campos incluidos:</p>
-            <div className="grid gap-2 sm:grid-cols-2">
-              {fields
-                .sort((a, b) => a.order - b.order)
-                .map((field, index) => (
-                  <div key={field.id} className="flex items-center gap-2 text-sm">
-                    <span className="text-muted-foreground">{index + 1}.</span>
-                    <span>{field.label}</span>
-                    {field.required && (
-                      <Badge variant="outline" className="text-xs">
-                        Requerido
-                      </Badge>
-                    )}
-                  </div>
-                ))}
+      {form.template && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Información de la plantilla original</CardTitle>
+            <CardDescription>
+              Este formulario fue creado basándose en una plantilla
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Plantilla base</p>
+                <p className="font-medium">{form.template.name}</p>
+              </div>
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Campos actuales</p>
+                <p className="font-medium">{fields.length}</p>
+              </div>
             </div>
             <p className="text-xs text-muted-foreground mt-3">
-              Para modificar los campos, debes crear un nuevo formulario desde una plantilla
+              Los campos pueden ser modificados independientemente de la plantilla original
             </p>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      )}
     </div>
   )
 }

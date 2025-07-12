@@ -2,7 +2,7 @@ import { z } from "zod"
 import { prisma } from "@/lib/prisma"
 import { type Form, type FormTemplate, type User, type Workspace } from "@prisma/client"
 import crypto from "crypto"
-import { formFieldSchema } from "./template-service"
+import { formFieldSchema } from "@/types/form-field"
 
 // ✅ Generación de tokens seguros
 export function generateShareToken(): string {

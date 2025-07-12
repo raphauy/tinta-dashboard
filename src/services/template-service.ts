@@ -1,19 +1,7 @@
 import { z } from "zod"
 import { prisma } from "@/lib/prisma"
 import { type FormTemplate, type User } from "@prisma/client"
-
-// ✅ Validaciones al inicio del archivo
-export const formFieldSchema = z.object({
-  id: z.string().min(1, "ID de campo requerido"),
-  type: z.enum(['text', 'textarea', 'file'], {
-    errorMap: () => ({ message: "Tipo de campo inválido" })
-  }),
-  label: z.string().min(1, "Etiqueta requerida"),
-  helpText: z.string().optional(),
-  required: z.boolean(),
-  order: z.number().int().min(0, "Orden debe ser positivo"),
-  properties: z.record(z.any()).optional()
-})
+import { formFieldSchema } from "@/types/form-field"
 
 export const createTemplateSchema = z.object({
   name: z.string().min(1, "Nombre requerido").max(255, "Nombre muy largo"),
@@ -25,7 +13,6 @@ export const createTemplateSchema = z.object({
 export const updateTemplateSchema = createTemplateSchema.partial().omit({ createdById: true })
 
 // Tipos derivados de schemas
-export type FormField = z.infer<typeof formFieldSchema>
 export type CreateTemplateData = z.infer<typeof createTemplateSchema>
 export type UpdateTemplateData = z.infer<typeof updateTemplateSchema>
 

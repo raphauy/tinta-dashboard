@@ -1,4 +1,5 @@
-import { getTemplates, type FormField } from "@/services/template-service"
+import { getTemplates } from "@/services/template-service"
+import { type FormField } from "@/types/form-field"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { TemplateActionsClient } from "./template-actions-client"

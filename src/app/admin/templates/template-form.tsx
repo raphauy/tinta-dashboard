@@ -8,8 +8,9 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { toast } from 'sonner'
 import { createTemplateAction, updateTemplateAction } from './actions'
-import { type FormField, type TemplateWithCreator } from '@/services/template-service'
-import { DraggableFormBuilder } from './draggable-form-builder'
+import { type TemplateWithCreator } from '@/services/template-service'
+import { type FormField } from '@/types/form-field'
+import { DraggableFormBuilder } from '@/components/form-builder/draggable-form-builder'
 
 interface TemplateFormProps {
   template?: TemplateWithCreator
@@ -108,7 +109,10 @@ export function TemplateForm({ template }: TemplateFormProps) {
 
       <DraggableFormBuilder 
         fields={fields} 
-        onFieldsChange={setFields} 
+        onFieldsChange={setFields}
+        title="Campos de la Plantilla"
+        emptyTitle="Agrega campos para estructurar tu plantilla"
+        emptyDescription="Esta plantilla no tiene campos aún"
       />
 
       <div className="flex gap-4">

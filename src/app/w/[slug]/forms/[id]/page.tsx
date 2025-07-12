@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
 import { getFormById } from '@/services/form-service'
-import { type FormField } from '@/services/template-service'
+import { type FormField } from '@/types/form-field'
 import { CopyLinkButton } from './copy-link-button'
 
 interface FormDetailPageProps {

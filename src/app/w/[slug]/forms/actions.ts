@@ -6,7 +6,7 @@ import { auth } from '@/lib/auth'
 import { deleteForm, updateFormStatus, createForm, generateShareToken } from '@/services/form-service'
 import { getWorkspaceBySlug } from '@/services/workspace-service'
 import { type CreateFormData } from '@/services/form-service'
-import { type FormField } from '@/services/template-service'
+import { type FormField } from '@/types/form-field'
 
 type ActionResult = {
   success: boolean

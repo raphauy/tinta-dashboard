@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { ArrowLeft, Edit, FileText, User, Clock, Hash } from "lucide-react"
-import { type FormField } from "@/services/template-service"
+import { type FormField } from "@/types/form-field"
 
 interface TemplateDetailPageProps {
   params: Promise<{

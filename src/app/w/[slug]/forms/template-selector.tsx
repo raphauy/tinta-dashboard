@@ -6,7 +6,8 @@ import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { type TemplateWithStats, type FormField } from '@/services/template-service'
+import { type TemplateWithStats } from '@/services/template-service'
+import { type FormField } from '@/types/form-field'
 
 interface TemplateSelectorProps {
   templates: TemplateWithStats[]
