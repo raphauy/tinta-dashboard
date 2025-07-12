@@ -90,18 +90,23 @@ export async function verifyOtpAction(email: string, otp: string): Promise<AuthR
     }
 
     // Usar el provider credentials para verificar OTP
+    console.log("Attempting signIn with credentials:", { email, otp: "***" })
     const result = await signIn("credentials", {
       email,
       otp,
       redirect: false
     })
 
+    console.log("SignIn result:", result)
+
     if (result?.error) {
+      console.error("SignIn error:", result.error)
       return { success: false, error: "Código OTP inválido o expirado" }
     }
 
     // Si llegamos aquí, la autenticación fue exitosa
     // El middleware se encargará de la redirección
+    console.log("OTP verification successful")
     return { success: true }
   } catch (error) {
     console.error("Error verifying OTP:", error)

@@ -60,49 +60,75 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   ],
   callbacks: {
     async signIn({ user }) {
-      // Check if user exists in database using service
-      const existingUser = await getUserByEmail(user.email!)
-      
-      if (!existingUser) {
-        return false // User doesn't exist
+      try {
+        console.log("SignIn callback triggered for user:", user.email)
+        
+        // Check if user exists in database using service
+        const existingUser = await getUserByEmail(user.email!)
+        console.log("Existing user found in signIn callback:", !!existingUser)
+        
+        if (!existingUser) {
+          console.log("SignIn failed: User doesn't exist in database")
+          return false // User doesn't exist
+        }
+        
+        console.log("SignIn successful for user:", user.email)
+        return true
+      } catch (error) {
+        console.error("SignIn callback error:", error)
+        return false
       }
-      
-      return true
     },
     async jwt({ token, user, trigger, session }) {
-      if (user) {
-        const dbUser = await getUserForAuth(user.email!)
+      try {
+        if (user) {
+          console.log("JWT callback triggered for user:", user.email)
+          const dbUser = await getUserForAuth(user.email!)
+          console.log("DB user found in JWT callback:", !!dbUser)
+          
+          if (dbUser) {
+            token.role = dbUser.role || "" // Usar cadena vacía para usuarios normales
+            token.id = dbUser.id
+            token.name = dbUser.name
+            token.image = dbUser.image
+            console.log("Token updated with user data:", { id: token.id, role: token.role })
+          }
+        }
         
-        if (dbUser) {
-          token.role = dbUser.role || "" // Usar cadena vacía para usuarios normales
-          token.id = dbUser.id
-          token.name = dbUser.name
-          token.image = dbUser.image
+        // Handle session updates (when user updates profile)
+        if (trigger === "update" && session) {
+          console.log("JWT token update triggered")
+          // Update token with new session data
+          if (session.name !== undefined) {
+            token.name = session.name
+          }
+          if (session.image !== undefined) {
+            token.image = session.image
+          }
         }
+        
+        return token
+      } catch (error) {
+        console.error("JWT callback error:", error)
+        return token
       }
-      
-      // Handle session updates (when user updates profile)
-      if (trigger === "update" && session) {
-        // Update token with new session data
-        if (session.name !== undefined) {
-          token.name = session.name
-        }
-        if (session.image !== undefined) {
-          token.image = session.image
-        }
-      }
-      
-      return token
     },
     async session({ session, token }) {
-      if (token) {
-        session.user.id = token.id as string
-        session.user.role = token.role as string
-        session.user.name = token.name as string
-        session.user.image = token.image as string | null
+      try {
+        console.log("Session callback triggered for:", session.user?.email)
+        if (token) {
+          session.user.id = token.id as string
+          session.user.role = token.role as string
+          session.user.name = token.name as string
+          session.user.image = token.image as string | null
+          console.log("Session updated with token data:", { id: session.user.id, role: session.user.role })
+        }
+        
+        return session
+      } catch (error) {
+        console.error("Session callback error:", error)
+        return session
       }
-      
-      return session
     }
   },
   pages: {
