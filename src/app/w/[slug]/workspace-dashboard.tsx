@@ -30,14 +30,14 @@ export async function WorkspaceDashboard({ slug }: WorkspaceDashboardProps) {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
-              Total de Miembros
+              Total de Colaboradores
             </CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{totalUsers}</div>
             <p className="text-xs text-muted-foreground">
-              miembros en el workspace
+              colaboradores en el workspace
             </p>
           </CardContent>
         </Card>
@@ -72,7 +72,7 @@ export async function WorkspaceDashboard({ slug }: WorkspaceDashboardProps) {
                 </Badge>
               ) : (
                 <Badge variant="secondary">
-                  Miembro
+                  Colaborador
                 </Badge>
               )}
             </div>
@@ -112,7 +112,7 @@ export async function WorkspaceDashboard({ slug }: WorkspaceDashboardProps) {
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="p-4 border rounded-lg">
-              <h3 className="font-medium mb-2">Gestión de Miembros</h3>
+              <h3 className="font-medium mb-2">Gestión de Colaboradores</h3>
               <p className="text-sm text-muted-foreground mb-3">
                 Administra los usuarios del workspace
               </p>
@@ -120,7 +120,7 @@ export async function WorkspaceDashboard({ slug }: WorkspaceDashboardProps) {
                 href={`/w/${slug}/members`}
                 className="text-primary hover:text-primary/80 text-sm font-medium"
               >
-                Ver miembros →
+                Ver colaboradores →
               </a>
             </div>
             {currentUserWorkspace?.role === "admin" && (

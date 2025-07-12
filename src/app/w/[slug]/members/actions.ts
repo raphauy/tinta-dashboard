@@ -54,7 +54,7 @@ export async function createInvitationAction(formData: FormData) {
       return { success: false, error: invitationResult.error }
     }
 
-    // Revalidar la página de miembros
+    // Revalidar la página de colaboradores
     revalidatePath(`/w/${workspaceSlug}/members`)
     
     return { success: true, message: "Invitación enviada correctamente" }
@@ -93,7 +93,7 @@ export async function cancelInvitationAction(formData: FormData) {
       return { success: false, error: result.error }
     }
 
-    // Revalidar la página de miembros
+    // Revalidar la página de colaboradores
     revalidatePath(`/w/${workspaceSlug}/members`)
     
     return { success: true, message: "Invitación cancelada correctamente" }
@@ -135,7 +135,7 @@ export async function resendInvitationAction(formData: FormData) {
       return { success: false, error: result.error }
     }
 
-    // Revalidar la página de miembros
+    // Revalidar la página de colaboradores
     revalidatePath(`/w/${workspaceSlug}/members`)
     
     return { success: true, message: "Invitación reenviada correctamente" }
@@ -150,7 +150,7 @@ export async function resendInvitationAction(formData: FormData) {
 }
 
 /**
- * Server Action para cambiar el rol de un miembro del workspace
+ * Server Action para cambiar el rol de un colaborador del workspace
  */
 export async function updateMemberRoleAction(formData: FormData) {
   const session = await auth()
@@ -195,10 +195,10 @@ export async function updateMemberRoleAction(formData: FormData) {
     // Actualizar rol
     await updateUserWorkspaceRole(userId, workspace.id, role as WorkspaceRole)
 
-    // Revalidar la página de miembros
+    // Revalidar la página de colaboradores
     revalidatePath(`/w/${workspaceSlug}/members`)
     
-    return { success: true, message: `Rol actualizado a ${role === "admin" ? "Admin" : "Miembro"} correctamente` }
+    return { success: true, message: `Rol actualizado a ${role === "admin" ? "Admin" : "Colaborador"} correctamente` }
 
   } catch (error: unknown) {
     console.error("Error updating member role:", error)
@@ -210,7 +210,7 @@ export async function updateMemberRoleAction(formData: FormData) {
 }
 
 /**
- * Server Action para remover un miembro del workspace
+ * Server Action para remover un colaborador del workspace
  */
 export async function removeMemberAction(formData: FormData) {
   const session = await auth()
@@ -238,7 +238,7 @@ export async function removeMemberAction(formData: FormData) {
     const isSuperadmin = session.user.role === "superadmin"
     
     if (!isAdmin && !isSuperadmin) {
-      return { success: false, error: "Solo los administradores pueden remover miembros" }
+      return { success: false, error: "Solo los administradores pueden remover colaboradores" }
     }
 
     // No permitir auto-gestión
@@ -249,7 +249,7 @@ export async function removeMemberAction(formData: FormData) {
     // Remover usuario del workspace
     await removeUserFromWorkspace(userId, workspace.id)
 
-    // Revalidar la página de miembros
+    // Revalidar la página de colaboradores
     revalidatePath(`/w/${workspaceSlug}/members`)
     
     return { success: true, message: "Usuario removido del workspace correctamente" }

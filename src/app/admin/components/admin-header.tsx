@@ -43,6 +43,11 @@ export function AdminHeader() {
             </div>
 
             <div className="flex items-center space-x-4">
+              <Button variant="outline" size="sm" asChild>
+                <Link href="/w" className="text-blue-600 hover:text-blue-800">
+                  Workspaces
+                </Link>
+              </Button>
               <ThemeToggle />
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>

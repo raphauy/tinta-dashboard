@@ -94,7 +94,7 @@ enum Role {
 
 enum WorkspaceRole {
   admin  // Admin del workspace
-  member // Miembro del workspace
+  member // Colaborador del workspace
 }
 
 model WorkspaceInvitation {

@@ -52,7 +52,7 @@ export function MemberActionsClient({
 
   const isCurrentlyAdmin = workspaceUser.role === "admin"
   const newRole = isCurrentlyAdmin ? "member" : "admin"
-  const newRoleText = isCurrentlyAdmin ? "Miembro" : "Admin"
+  const newRoleText = isCurrentlyAdmin ? "Colaborador" : "Admin"
 
   const handleRoleChange = async () => {
     setIsLoading(true)
@@ -122,7 +122,7 @@ export function MemberActionsClient({
             {isCurrentlyAdmin ? (
               <>
                 <User className="mr-2 h-4 w-4" />
-                Cambiar a Miembro
+                Cambiar a Colaborador
               </>
             ) : (
               <>
@@ -151,7 +151,7 @@ export function MemberActionsClient({
               <strong>{workspaceUser.user.name || workspaceUser.user.email}</strong>{" "}
               de{" "}
               <Badge variant={isCurrentlyAdmin ? "default" : "secondary"} className="mx-1">
-                {isCurrentlyAdmin ? "Admin" : "Miembro"}
+                {isCurrentlyAdmin ? "Admin" : "Colaborador"}
               </Badge>
               {" "}a{" "}
               <Badge variant={!isCurrentlyAdmin ? "default" : "secondary"} className="mx-1">

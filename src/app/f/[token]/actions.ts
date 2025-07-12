@@ -101,7 +101,7 @@ export async function submitFormResponse(formId: string, formData: Record<string
       submitterIP: clientIP // IP obtenida al inicio de la función
     })
 
-    // 5. Enviar notificaciones por email a todos los miembros del workspace
+    // 5. Enviar notificaciones por email a todos los colaboradores del workspace
     try {
       const workspaceMembers = response.form.workspace.users
       const memberEmails = workspaceMembers.map(member => member.user.email)

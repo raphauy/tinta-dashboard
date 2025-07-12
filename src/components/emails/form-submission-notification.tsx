@@ -22,7 +22,7 @@ interface FormSubmissionNotificationProps {
 }
 
 export default function FormSubmissionNotification({
-  recipientName = "Miembro del equipo",
+  recipientName = "Colaborador del equipo",
   formName = "Brief de Marca",
   workspaceName = "Vinos del Valle",
   submittedAt = "Hoy a las 14:30",
@@ -195,7 +195,7 @@ export default function FormSubmissionNotification({
 
                 <Text className="text-gray-600 text-xs leading-4 mb-3">
                   Todas las respuestas de formularios se almacenan de forma segura y están disponibles 
-                  para todos los miembros del workspace de {workspaceName}.
+                  para todos los colaboradores del workspace de {workspaceName}.
                 </Text>
               </Section>
 
@@ -212,7 +212,7 @@ export default function FormSubmissionNotification({
                   className="text-xs text-center m-0"
                   style={{color: '#6b7280', fontSize: '12px', textAlign: 'center', margin: 0}}
                 >
-                  Esta notificación fue enviada porque eres miembro del workspace &ldquo;{workspaceName}&rdquo; en Tinta Agency.
+                  Esta notificación fue enviada porque eres colaborador del workspace &ldquo;{workspaceName}&rdquo; en Tinta Agency.
                 </Text>
                 <Text 
                   className="text-xs text-center mt-1 mb-0"

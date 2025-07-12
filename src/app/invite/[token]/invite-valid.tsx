@@ -60,7 +60,7 @@ export function InviteValid({ invitation, userState, session }: InviteValidProps
     ) : (
       <Badge variant="secondary">
         <User className="w-3 h-3 mr-1" />
-        Miembro
+        Colaborador
       </Badge>
     )
   }

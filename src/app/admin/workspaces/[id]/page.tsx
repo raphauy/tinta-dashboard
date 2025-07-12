@@ -101,7 +101,7 @@ export default async function WorkspaceDetailPage({ params }: WorkspaceDetailPag
           <CardHeader>
             <CardTitle>Usuarios</CardTitle>
             <CardDescription>
-              Miembros actuales del workspace
+              Colaboradores actuales del workspace
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -121,7 +121,7 @@ export default async function WorkspaceDetailPage({ params }: WorkspaceDetailPag
                     )}
                   </div>
                   <Badge variant={userWorkspace.role === 'admin' ? 'default' : 'secondary'}>
-                    {userWorkspace.role === 'admin' ? 'Admin' : 'Miembro'}
+                    {userWorkspace.role === 'admin' ? 'Admin' : 'Colaborador'}
                   </Badge>
                 </div>
               ))}

@@ -105,7 +105,7 @@ export function InviteUserDialog({ workspaceId, workspaceSlug }: InviteUserDialo
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value={WorkspaceRole.member}>
-                  Miembro
+                  Colaborador
                 </SelectItem>
                 <SelectItem value={WorkspaceRole.admin}>
                   Administrador
@@ -113,7 +113,7 @@ export function InviteUserDialog({ workspaceId, workspaceSlug }: InviteUserDialo
               </SelectContent>
             </Select>
             <div className="text-xs text-muted-foreground space-y-1">
-              <div><strong>Miembro:</strong> Puede ver y participar en el workspace</div>
+              <div><strong>Colaborador:</strong> Puede ver y participar en el workspace</div>
               <div><strong>Administrador:</strong> Puede gestionar usuarios, configuración e invitaciones</div>
             </div>
           </div>

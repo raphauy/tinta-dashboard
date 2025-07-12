@@ -29,11 +29,11 @@ export function WorkspaceNav({ workspaceSlug, isAdmin }: WorkspaceNavProps) {
       showForMembers: true, // Todos pueden ver formularios
     },
     {
-      label: "Miembros",
+      label: "Colaboradores",
       href: `/w/${workspaceSlug}/members`,
       icon: Users,
       isActive: pathname === `/w/${workspaceSlug}/members`,
-      showForMembers: true, // Todos pueden ver miembros
+      showForMembers: true, // Todos pueden ver colaboradores
     },
     {
       label: "Configuración",

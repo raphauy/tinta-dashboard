@@ -34,7 +34,7 @@ export function InviteAlreadyAccepted({ invitation }: InviteAlreadyAcceptedProps
           Invitación ya aceptada
         </CardTitle>
         <CardDescription>
-          Ya eres miembro del workspace &ldquo;{invitation.workspace.name}&rdquo;
+          Ya eres colaborador del workspace &ldquo;{invitation.workspace.name}&rdquo;
         </CardDescription>
       </CardHeader>
       <CardContent className="text-center space-y-4">

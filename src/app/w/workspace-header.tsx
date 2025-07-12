@@ -93,6 +93,13 @@ export function WorkspaceHeader({ user, userWorkspaces }: WorkspaceHeaderProps) 
 
           {/* Actions */}
           <div className="flex items-center space-x-2">
+            {user.role === "superadmin" && (
+              <Button variant="outline" size="sm" asChild>
+                <Link href="/admin" className="text-blue-600 hover:text-blue-800">
+                  Admin
+                </Link>
+              </Button>
+            )}
             <ThemeToggle />
             
             {/* User Menu */}

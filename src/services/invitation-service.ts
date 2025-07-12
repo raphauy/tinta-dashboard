@@ -226,7 +226,7 @@ export async function acceptWorkspaceInvitation(input: AcceptInvitationInput) {
     })
     
     if (existingMembership) {
-      return { success: false, error: 'Ya eres miembro de este workspace' }
+      return { success: false, error: 'Ya eres colaborador de este workspace' }
     }
     
     // Usar transacción para aceptar invitación y agregar usuario

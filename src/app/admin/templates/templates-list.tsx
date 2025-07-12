@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge"
 import { TemplateActionsClient } from "./template-actions-client"
 import { FileText, Clock, User } from "lucide-react"
+import Link from "next/link"
 
 export async function TemplatesList() {
   const templates = await getTemplates()
@@ -29,7 +30,14 @@ export async function TemplatesList() {
           <CardHeader>
             <div className="flex justify-between items-start">
               <div className="space-y-1">
-                <CardTitle className="text-lg">{template.name}</CardTitle>
+                <CardTitle className="text-lg">
+                  <Link 
+                    href={`/admin/templates/${template.id}`}
+                    className="hover:text-primary transition-colors"
+                  >
+                    {template.name}
+                  </Link>
+                </CardTitle>
                 {template.description && (
                   <CardDescription>{template.description}</CardDescription>
                 )}

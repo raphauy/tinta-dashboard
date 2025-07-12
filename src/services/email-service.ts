@@ -99,7 +99,7 @@ export const sendFormSubmissionNotificationSchema = z.object({
 export type SendFormSubmissionNotificationInput = z.infer<typeof sendFormSubmissionNotificationSchema>
 
 /**
- * Envía notificaciones de nueva submission a todos los miembros del workspace
+ * Envía notificaciones de nueva submission a todos los colaboradores del workspace
  */
 export async function sendFormSubmissionNotification(input: SendFormSubmissionNotificationInput) {
   try {
@@ -112,7 +112,7 @@ export async function sendFormSubmissionNotification(input: SendFormSubmissionNo
     // Generar URL para ver la respuesta
     const viewUrl = `${baseUrl}/w/${validatedInput.workspaceSlug}/forms/${validatedInput.formId}/responses/${validatedInput.responseId}`
     
-    // Enviar email a todos los miembros del workspace
+    // Enviar email a todos los colaboradores del workspace
     const emailPromises = validatedInput.to.map(async (email) => {
       const { data, error } = await resend.emails.send({
         from: `${appName} <${fromEmail}>`,
