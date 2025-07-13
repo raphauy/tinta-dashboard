@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge'
 import { FormActionsClient } from './form-actions-client'
 import { FileText, Calendar, BarChart3, Users } from 'lucide-react'
 import { notFound } from 'next/navigation'
+import { getTintaColor } from '@/lib/tinta-colors'
 
 interface FormsListProps {
   workspaceSlug: string
@@ -46,11 +47,15 @@ export async function FormsList({ workspaceSlug }: FormsListProps) {
                     href={`/w/${workspaceSlug}/forms/${form.id}`}
                     className="hover:text-primary transition-colors"
                   >
-                    {form.name}
+                    {form.title2 ? (
+                      <span>{form.title} {form.title2}</span>
+                    ) : (
+                      form.title
+                    )}
                   </Link>
                 </CardTitle>
-                {form.description && (
-                  <CardDescription>{form.description}</CardDescription>
+                {form.subtitle && (
+                  <CardDescription>{form.subtitle}</CardDescription>
                 )}
               </div>
               <FormActionsClient form={form} workspaceSlug={workspaceSlug} />
@@ -90,6 +95,16 @@ export async function FormsList({ workspaceSlug }: FormsListProps) {
               </div>
             )}
           </CardContent>
+          
+          {/* Círculo de color en esquina inferior derecha */}
+          {form.color && (
+            <div className="absolute bottom-3 right-3">
+              <div 
+                className="w-4 h-4 rounded-full border border-white shadow-sm" 
+                style={{ backgroundColor: getTintaColor(form.color) || '#DDBBC0' }}
+              />
+            </div>
+          )}
         </Card>
       ))}
     </div>

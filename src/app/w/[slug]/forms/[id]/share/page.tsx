@@ -68,7 +68,7 @@ async function SharePageContent({ workspaceSlug, formId }: { workspaceSlug: stri
           <div className="flex items-center gap-3">
             <h1 className="text-3xl font-bold tracking-tight">Configuración de compartir</h1>
             <span className="text-lg text-muted-foreground">•</span>
-            <span className="text-xl font-medium text-muted-foreground">{form.name}</span>
+            <span className="text-xl font-medium text-muted-foreground">{form.title2 ? `${form.title} ${form.title2}` : form.title}</span>
           </div>
           <p className="text-muted-foreground">
             Administra cómo se comparte y accede a tu formulario

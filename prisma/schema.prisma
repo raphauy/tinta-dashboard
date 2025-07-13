@@ -138,8 +138,12 @@ model FormTemplate {
 
 model Form {
   id           String        @id @default(cuid())
-  name         String
-  description  String?
+  title        String        // Cambio: name → title
+  title2       String?       // Nuevo: Segunda línea del título para diseños específicos
+  color        String?       // Nuevo: Color del círculo (colores de marca Tinta)
+  subtitle     String?       // Cambio: description → subtitle
+  projectName  String?       // Nuevo: Para header PDF
+  client       String?       // Nuevo: Para header PDF
   fields       Json          // Estructura de campos personalizada
   workspaceId  String
   templateId   String?       // Plantilla de origen (opcional)

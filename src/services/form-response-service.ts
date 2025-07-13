@@ -308,7 +308,7 @@ export async function searchResponses(
     where: {
       form: {
         workspaceId,
-        name: {
+        title: {
           contains: query,
           mode: 'insensitive'
         }

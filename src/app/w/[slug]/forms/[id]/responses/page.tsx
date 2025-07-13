@@ -72,13 +72,13 @@ export default async function ResponsesPage({ params }: ResponsesPageProps) {
               href={`/w/${slug}/forms/${formId}`}
               className="hover:text-foreground transition-colors"
             >
-              {form.name}
+              {form.title2 ? `${form.title} ${form.title2}` : form.title}
             </Link>
             <span>/</span>
             <span>Respuestas</span>
           </div>
           <h1 className="text-3xl font-bold tracking-tight">
-            Respuestas de &ldquo;{form.name}&rdquo;
+            Respuestas de &ldquo;{form.title2 ? `${form.title} ${form.title2}` : form.title}&rdquo;
           </h1>
           <p className="text-muted-foreground">
             Gestiona y revisa todas las respuestas recibidas para este formulario

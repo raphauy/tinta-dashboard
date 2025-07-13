@@ -150,7 +150,7 @@ export function FormActionsClient({ form, workspaceSlug }: FormActionsClientProp
           <DialogHeader>
             <DialogTitle>¿Eliminar formulario?</DialogTitle>
             <DialogDescription>
-              Esta acción no se puede deshacer. El formulario &quot;{form.name}&quot; será eliminado permanentemente.
+              Esta acción no se puede deshacer. El formulario &quot;{form.title2 ? `${form.title} ${form.title2}` : form.title}&quot; será eliminado permanentemente.
               {!canDelete && (
                 <span className="block mt-2 text-destructive">
                   No se puede eliminar un formulario que tiene {form._count.responses} respuesta(s).

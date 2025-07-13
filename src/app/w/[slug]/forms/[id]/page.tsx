@@ -9,6 +9,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { getFormById } from '@/services/form-service'
 import { type FormField } from '@/types/form-field'
 import { CopyLinkButton } from './copy-link-button'
+import { getTintaColor, tintaColorOptions } from '@/lib/tinta-colors'
 
 interface FormDetailPageProps {
   params: Promise<{
@@ -68,9 +69,11 @@ async function FormDetailContent({ workspaceSlug, formId }: { workspaceSlug: str
               </Link>
             </Button>
           </div>
-          <h1 className="text-3xl font-bold tracking-tight">{form.name}</h1>
-          {form.description && (
-            <p className="text-muted-foreground">{form.description}</p>
+          <h1 className="text-3xl font-bold tracking-tight">
+            {form.title2 ? `${form.title} ${form.title2}` : form.title}
+          </h1>
+          {form.subtitle && (
+            <p className="text-muted-foreground">{form.subtitle}</p>
           )}
         </div>
         
@@ -140,6 +143,36 @@ async function FormDetailContent({ workspaceSlug, formId }: { workspaceSlug: str
                   <p className="text-sm font-medium text-muted-foreground">Respuestas recibidas</p>
                   <p className="font-medium">{form._count.responses}</p>
                 </div>
+                {form.projectName && (
+                  <div>
+                    <p className="text-sm font-medium text-muted-foreground">Proyecto</p>
+                    <p className="font-medium">{form.projectName}</p>
+                  </div>
+                )}
+                {form.client && (
+                  <div>
+                    <p className="text-sm font-medium text-muted-foreground">Cliente</p>
+                    <p className="font-medium">{form.client}</p>
+                  </div>
+                )}
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Múltiples envíos</p>
+                  <p className="font-medium">{form.allowEdits ? 'Permitidos' : 'No permitidos'}</p>
+                </div>
+                {form.color && (
+                  <div>
+                    <p className="text-sm font-medium text-muted-foreground">Color</p>
+                    <div className="flex items-center gap-2">
+                      <div 
+                        className="w-4 h-4 rounded-full border" 
+                        style={{ backgroundColor: getTintaColor(form.color) }}
+                      />
+                      <span className="font-medium">
+                        {tintaColorOptions.find(opt => opt.value === form.color)?.label || form.color}
+                      </span>
+                    </div>
+                  </div>
+                )}
               </div>
             </CardContent>
           </Card>

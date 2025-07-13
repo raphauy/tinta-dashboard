@@ -164,7 +164,7 @@ export function PublicFormRenderer({ form }: PublicFormRendererProps) {
           <div className="p-4 bg-muted/50 rounded-lg">
             <p className="text-sm text-muted-foreground">
               <strong>Cliente:</strong> {form.workspace.name}<br />
-              <strong>Formulario:</strong> {form.name}<br />
+              <strong>Formulario:</strong> {form.title2 ? `${form.title} ${form.title2}` : form.title}<br />
               <strong>Enviado:</strong> {new Date().toLocaleString('es-ES')}
             </p>
           </div>

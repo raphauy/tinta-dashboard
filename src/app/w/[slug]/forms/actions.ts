@@ -67,8 +67,13 @@ export async function updateFormStatusAction(
  * Crea un nuevo formulario desde una plantilla
  */
 export async function createFormFromTemplateAction(data: {
-  name: string
-  description?: string
+  title: string
+  title2?: string
+  color?: string
+  subtitle?: string
+  projectName?: string
+  client?: string
+  allowEdits?: boolean
   workspaceSlug: string
   templateId?: string
   fields: FormField[]
@@ -87,12 +92,16 @@ export async function createFormFromTemplateAction(data: {
     const shareToken = generateShareToken()
 
     const formData: CreateFormData = {
-      name: data.name,
-      description: data.description,
+      title: data.title,
+      title2: data.title2,
+      color: data.color,
+      subtitle: data.subtitle,
+      projectName: data.projectName,
+      client: data.client,
       workspaceId: workspace.id,
       templateId: data.templateId,
       fields: data.fields,
-      allowEdits: false,
+      allowEdits: data.allowEdits ?? false,
       shareToken,
       createdById: session.user.id
     }

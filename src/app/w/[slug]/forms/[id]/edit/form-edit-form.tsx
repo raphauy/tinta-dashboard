@@ -10,11 +10,13 @@ import { Textarea } from '@/components/ui/textarea'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Switch } from '@/components/ui/switch'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { updateFormAction, updateFormFieldsAction } from './actions'
 import { toast } from 'sonner'
 import { type FormWithRelations } from '@/services/form-service'
 import { type FormField } from '@/types/form-field'
 import { DraggableFormBuilder } from '@/components/form-builder/draggable-form-builder'
+import { tintaColorOptions, getTintaColor } from '@/lib/tinta-colors'
 
 interface FormEditFormProps {
   form: FormWithRelations
@@ -23,8 +25,13 @@ interface FormEditFormProps {
 
 export function FormEditForm({ form, workspaceSlug }: FormEditFormProps) {
   const router = useRouter()
-  const [name, setName] = useState(form.name)
-  const [description, setDescription] = useState(form.description || '')
+  const [title, setTitle] = useState(form.title)
+  const [title2, setTitle2] = useState(form.title2 || '')
+  const [color, setColor] = useState(form.color || '')
+  const [subtitle, setSubtitle] = useState(form.subtitle || '')
+  const [projectName, setProjectName] = useState(form.projectName || '')
+  const [client, setClient] = useState(form.client || '')
+  const [allowEdits, setAllowEdits] = useState(form.allowEdits)
   const [isActive, setIsActive] = useState(form.isActive)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [fields, setFields] = useState<FormField[]>(() => {
@@ -41,8 +48,8 @@ export function FormEditForm({ form, workspaceSlug }: FormEditFormProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
-    if (!name.trim()) {
-      toast.error('El nombre es requerido')
+    if (!title.trim()) {
+      toast.error('El título es requerido')
       return
     }
 
@@ -50,8 +57,13 @@ export function FormEditForm({ form, workspaceSlug }: FormEditFormProps) {
 
     try {
       const result = await updateFormAction(form.id, {
-        name: name.trim(),
-        description: description.trim() || undefined,
+        title: title.trim(),
+        title2: title2.trim() || undefined,
+        color: color || undefined,
+        subtitle: subtitle.trim() || undefined,
+        projectName: projectName.trim() || undefined,
+        client: client.trim() || undefined,
+        allowEdits,
         isActive
       })
 
@@ -108,59 +120,152 @@ export function FormEditForm({ form, workspaceSlug }: FormEditFormProps) {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="name">Nombre del formulario</Label>
-              <Input
-                id="name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="Nombre del formulario"
-                required
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="description">Descripción (opcional)</Label>
-              <Textarea
-                id="description"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                placeholder="Describe el propósito de este formulario..."
-                rows={3}
-              />
-            </div>
-
-            <div className="flex items-center justify-between py-2">
-              <div className="space-y-1">
-                <Label htmlFor="is-active" className="text-sm font-medium">
-                  Estado del formulario
-                </Label>
-                <p className="text-sm text-muted-foreground">
-                  {isActive 
-                    ? 'El formulario está activo y acepta respuestas'
-                    : 'El formulario está inactivo y no acepta respuestas'
-                  }
-                </p>
-              </div>
-              <div className="flex items-center gap-2">
-                <Badge variant={isActive ? 'default' : 'secondary'}>
-                  {isActive ? (
-                    <>
-                      <Power className="h-3 w-3 mr-1" />
-                      Activo
-                    </>
-                  ) : (
-                    <>
-                      <PowerOff className="h-3 w-3 mr-1" />
-                      Inactivo
-                    </>
-                  )}
-                </Badge>
-                <Switch
-                  id="is-active"
-                  checked={isActive}
-                  onCheckedChange={setIsActive}
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div className="space-y-2">
+                <Label htmlFor="title">Título del formulario</Label>
+                <Input
+                  id="title"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  placeholder="Brief de Diseño"
+                  required
                 />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="title2">Segunda línea del título (opcional)</Label>
+                <Input
+                  id="title2"
+                  value={title2}
+                  onChange={(e) => setTitle2(e.target.value)}
+                  placeholder="de Logotipo"
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="color">Color del círculo (opcional)</Label>
+              <Select value={color || "none"} onValueChange={(value) => setColor(value === "none" ? "" : value)}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecciona un color">
+                    {color ? (
+                      <div className="flex items-center gap-2">
+                        <div 
+                          className="w-4 h-4 rounded-full border" 
+                          style={{ backgroundColor: getTintaColor(color) }}
+                        />
+                        {tintaColorOptions.find(opt => opt.value === color)?.label}
+                      </div>
+                    ) : (
+                      "Sin color"
+                    )}
+                  </SelectValue>
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">Sin color</SelectItem>
+                  {tintaColorOptions.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      <div className="flex items-center gap-2">
+                        <div 
+                          className="w-4 h-4 rounded-full border" 
+                          style={{ backgroundColor: option.color }}
+                        />
+                        {option.label}
+                      </div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <p className="text-xs text-muted-foreground">
+                Solo aparece si hay segunda línea del título
+              </p>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="subtitle">Subtítulo (opcional)</Label>
+              <Textarea
+                id="subtitle"
+                value={subtitle}
+                onChange={(e) => setSubtitle(e.target.value)}
+                placeholder="Información requerida para iniciar el proyecto"
+                rows={2}
+              />
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div className="space-y-2">
+                <Label htmlFor="projectName">Nombre del proyecto (opcional)</Label>
+                <Input
+                  id="projectName"
+                  value={projectName}
+                  onChange={(e) => setProjectName(e.target.value)}
+                  placeholder="Proyecto 1"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="client">Cliente (opcional)</Label>
+                <Input
+                  id="client"
+                  value={client}
+                  onChange={(e) => setClient(e.target.value)}
+                  placeholder="Vinos del Mundo"
+                />
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <div className="flex items-center justify-between py-2">
+                <div className="space-y-1">
+                  <Label htmlFor="allow-edits" className="text-sm font-medium">
+                    Múltiples envíos
+                  </Label>
+                  <p className="text-sm text-muted-foreground">
+                    {allowEdits 
+                      ? 'Permite múltiples respuestas del mismo cliente'
+                      : 'Solo permite una respuesta por cliente'
+                    }
+                  </p>
+                </div>
+                <Switch
+                  id="allow-edits"
+                  checked={allowEdits}
+                  onCheckedChange={setAllowEdits}
+                />
+              </div>
+
+              <div className="flex items-center justify-between py-2">
+                <div className="space-y-1">
+                  <Label htmlFor="is-active" className="text-sm font-medium">
+                    Estado del formulario
+                  </Label>
+                  <p className="text-sm text-muted-foreground">
+                    {isActive 
+                      ? 'El formulario está activo y acepta respuestas'
+                      : 'El formulario está inactivo y no acepta respuestas'
+                    }
+                  </p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Badge variant={isActive ? 'default' : 'secondary'}>
+                    {isActive ? (
+                      <>
+                        <Power className="h-3 w-3 mr-1" />
+                        Activo
+                      </>
+                    ) : (
+                      <>
+                        <PowerOff className="h-3 w-3 mr-1" />
+                        Inactivo
+                      </>
+                    )}
+                  </Badge>
+                  <Switch
+                    id="is-active"
+                    checked={isActive}
+                    onCheckedChange={setIsActive}
+                  />
+                </div>
               </div>
             </div>
 

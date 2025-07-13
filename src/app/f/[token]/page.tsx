@@ -1,17 +1,16 @@
 import { notFound } from "next/navigation"
 import { getFormByToken, isFormActiveByToken } from "@/services/form-service"
-import { PublicFormRenderer } from "./public-form-renderer"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { WorkspaceAvatar } from "@/components/workspace-avatar"
+import { PdfStyleFormRenderer } from "./pdf-style-form-renderer"
 import { CheckCircle, MessageCircle } from "lucide-react"
+import { getTintaColor } from "@/lib/tinta-colors"
 
-interface PublicFormPageProps {
+interface PdfStyleFormPageProps {
   params: Promise<{
     token: string
   }>
 }
 
-export default async function PublicFormPage({ params }: PublicFormPageProps) {
+export default async function PdfStyleFormPage({ params }: PdfStyleFormPageProps) {
   const { token } = await params
 
   // Validar que el formulario existe y está activo
@@ -29,94 +28,122 @@ export default async function PublicFormPage({ params }: PublicFormPageProps) {
   const shouldBlockSubmission = hasAnyResponses && !form.allowEdits
 
   return (
-    <div className="max-w-4xl mx-auto">
-      {/* Header del formulario */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-tinta-verde-uva mb-2">
-          {form.name}
-        </h1>
-        {form.description && (
-          <p className="text-muted-foreground text-lg leading-relaxed">
-            {form.description}
-          </p>
-        )}
-        <div className="mt-4 p-4 bg-tinta-paper/50 dark:bg-gray-800/50 rounded-lg border border-tinta-paper/80 dark:border-gray-700/80">
-          <div className="flex items-center space-x-3 mb-2">
-            <WorkspaceAvatar 
-              workspace={form.workspace}
-              size="md"
-            />
-            <div>
-              <p className="text-sm font-medium text-foreground">
-                {form.workspace.name}
-              </p>
+    <>
+      {/* Header estilo PDF con padding */}
+      <div className="p-8 md:p-12 pb-6 md:pb-8">
+        <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
+          {/* Lado izquierdo - Título del formulario */}
+          <div className="flex-1">
+            {form.title2 && form.color ? (
+              // Título con dos líneas y círculo de color
+              <div className="space-y-0">
+                <div className="flex items-center gap-3">
+                  <h1 className="text-6xl font-bold leading-none tracking-tight" style={{ color: '#8A8A7C' }}>
+                    {form.title}
+                  </h1>
+                  <div 
+                    className="w-8 h-8 rounded-full flex-shrink-0" 
+                    style={{ backgroundColor: getTintaColor(form.color) || '#DDBBC0' }}
+                  />
+                </div>
+                <h2 className="text-6xl font-bold leading-none tracking-tight -mt-2" style={{ color: '#8A8A7C' }}>
+                  {form.title2}
+                </h2>
+              </div>
+            ) : (
+              // Título simple sin círculo
+              <h1 className="text-6xl font-bold leading-tight tracking-tight" style={{ color: '#8A8A7C' }}>
+                {form.title}
+              </h1>
+            )}
+          </div>
+          
+          {/* Lado derecho - Campos dinámicos */}
+          <div className="lg:w-96 space-y-3 lg:mt-2">
+            <div className="flex items-baseline gap-3 border-b border-stone-300 pb-1">
+              <div className="text-xs text-stone-400 uppercase tracking-widest font-medium min-w-fit">
+                NOMBRE DEL PROYECTO
+              </div>
+              <div className="text-sm text-stone-600 dark:text-gray-600 flex-1 min-w-0">
+                {form.projectName || "___________"}
+              </div>
+            </div>
+            <div className="flex items-baseline gap-3 border-b border-stone-300 pb-1">
+              <div className="text-xs text-stone-400 uppercase tracking-widest font-medium min-w-fit">
+                CLIENTE
+              </div>
+              <div className="text-sm text-stone-600 dark:text-gray-600 flex-1 min-w-0">
+                {form.client || "___________"}
+              </div>
+            </div>
+            <div className="flex items-baseline gap-3 border-b border-stone-300 pb-1">
+              <div className="text-xs text-stone-400 uppercase tracking-widest font-medium min-w-fit">
+                FECHA
+              </div>
+              <div className="text-sm text-stone-600 dark:text-gray-600 flex-1 min-w-0">
+                {new Date().toLocaleDateString('es-ES')}
+              </div>
             </div>
           </div>
-          <p className="text-sm text-muted-foreground">
-            {shouldBlockSubmission 
-              ? "Este formulario ya no acepta más respuestas."
-              : "Completa todos los campos obligatorios para enviar tu información."
-            }
+        </div>
+        
+        {/* Línea horizontal con el mismo padding que el contenido */}
+        <div className="border-b-2 border-stone-300 mt-6"></div>
+      </div>
+      
+      {/* Descripción del formulario centrada debajo de la línea */}
+      {form.subtitle && (
+        <div className="text-center pt-0 pb-6 px-8 md:px-12">
+          <p className="font-semibold text-2xl tracking-wide" style={{ color: '#8A8A7C' }}>
+            {form.subtitle}
           </p>
         </div>
-      </div>
-
-      {/* Mostrar mensaje de ya enviado o el formulario */}
-      {shouldBlockSubmission ? (
-        <Card className="max-w-2xl mx-auto">
-          <CardHeader className="text-center">
-            <div className="flex justify-center mb-4">
-              <CheckCircle className="h-16 w-16 text-green-500" />
+      )}
+      
+      {/* Contenido del formulario con padding */}
+      <div className="px-8 md:px-12 pb-8 md:pb-12">
+        {/* Mostrar mensaje de ya enviado o el formulario */}
+        {shouldBlockSubmission ? (
+          <div className="max-w-2xl mx-auto text-center py-12">
+            <div className="mb-6">
+              <CheckCircle className="h-16 w-16 text-green-500 mx-auto" />
             </div>
-            <CardTitle className="text-2xl">Formulario cerrado</CardTitle>
-            <CardDescription className="text-lg">
+            <h2 className="text-2xl font-light text-stone-700 dark:text-gray-700 mb-4">
+              Formulario cerrado
+            </h2>
+            <p className="text-stone-600 dark:text-gray-600 mb-6">
               Este formulario ya no acepta más respuestas.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="text-center space-y-4">
-            <div className="p-4 bg-green-50 dark:bg-green-950/30 rounded-lg border border-green-200 dark:border-green-900">
+            </p>
+            
+            <div className="p-4 bg-green-50 dark:bg-green-100 rounded-lg border border-green-200 mb-6">
               <div className="flex items-center gap-3 justify-center">
-                <MessageCircle className="h-5 w-5 text-green-600 dark:text-green-500" />
-                <p className="text-green-800 dark:text-green-200 font-medium">
+                <MessageCircle className="h-5 w-5 text-green-600" />
+                <p className="text-green-800 font-medium">
                   Tinta ya está procesando las respuestas recibidas
                 </p>
               </div>
             </div>
             
-            <div className="pt-4 border-t">
-              <div className="flex items-center justify-center space-x-3 mb-3">
-                <WorkspaceAvatar 
-                  workspace={form.workspace}
-                  size="lg"
-                />
-                <div className="text-center">
-                  <p className="text-sm font-medium text-foreground">
-                    {form.workspace.name}
-                  </p>
-                </div>
-              </div>
-              
-              <p className="text-sm text-muted-foreground">
-                Si tienes preguntas o necesitas información adicional, 
-                contáctanos en{" "}
-                <a 
-                  href="mailto:contacto@tinta.wine" 
-                  className="text-primary hover:underline"
-                >
-                  contacto@tinta.wine
-                </a>
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-      ) : (
-        <PublicFormRenderer form={form} />
-      )}
-    </div>
+            <p className="text-sm text-stone-500 dark:text-gray-600">
+              Si tienes preguntas o necesitas información adicional, 
+              contáctanos en{" "}
+              <a 
+                href="mailto:contacto@tinta.wine" 
+                className="text-tinta-verde-uva hover:underline"
+              >
+                contacto@tinta.wine
+              </a>
+            </p>
+          </div>
+        ) : (
+          <PdfStyleFormRenderer form={form} />
+        )}
+      </div>
+    </>
   )
 }
 
-export async function generateMetadata({ params }: PublicFormPageProps) {
+export async function generateMetadata({ params }: PdfStyleFormPageProps) {
   const { token } = await params
   const form = await getFormByToken(token)
   
@@ -127,7 +154,7 @@ export async function generateMetadata({ params }: PublicFormPageProps) {
   }
 
   return {
-    title: `${form.name} - Tinta Agency`,
-    description: form.description || `Completa el formulario ${form.name} para ${form.workspace.name}`,
+    title: `${form.title2 ? `${form.title} ${form.title2}` : form.title} - Tinta Agency`,
+    description: form.subtitle || `Completa el formulario ${form.title2 ? `${form.title} ${form.title2}` : form.title} para ${form.workspace.name}`,
   }
 }

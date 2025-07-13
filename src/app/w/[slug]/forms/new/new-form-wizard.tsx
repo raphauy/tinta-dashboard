@@ -9,12 +9,15 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { Switch } from '@/components/ui/switch'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { TemplateSelector } from '../template-selector'
 import { TemplatePreview } from '../template-preview'
 import { createFormFromTemplateAction } from '../actions'
 import { toast } from 'sonner'
 import { type TemplateWithStats } from '@/services/template-service'
 import { type FormField } from '@/types/form-field'
+import { tintaColorOptions, getTintaColor } from '@/lib/tinta-colors'
 
 interface NewFormWizardProps {
   workspaceSlug: string
@@ -27,23 +30,28 @@ export function NewFormWizard({ workspaceSlug, templates }: NewFormWizardProps) 
   const router = useRouter()
   const [step, setStep] = useState<Step>('template')
   const [selectedTemplate, setSelectedTemplate] = useState<TemplateWithStats | null>(null)
-  const [formName, setFormName] = useState('')
-  const [formDescription, setFormDescription] = useState('')
+  const [formTitle, setFormTitle] = useState('')
+  const [formTitle2, setFormTitle2] = useState('')
+  const [formColor, setFormColor] = useState('')
+  const [formSubtitle, setFormSubtitle] = useState('')
+  const [projectName, setProjectName] = useState('')
+  const [client, setClient] = useState('')
+  const [allowEdits, setAllowEdits] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const handleTemplateSelect = (template: TemplateWithStats) => {
     setSelectedTemplate(template)
-    // Auto-populate form name based on template
-    if (!formName) {
-      setFormName(`Formulario - ${template.name}`)
+    // Auto-populate form title based on template
+    if (!formTitle) {
+      setFormTitle(`Formulario - ${template.name}`)
     }
   }
 
   const handleUseTemplate = (template: TemplateWithStats) => {
     setSelectedTemplate(template)
-    // Auto-populate form name based on template
-    if (!formName) {
-      setFormName(`Formulario - ${template.name}`)
+    // Auto-populate form title based on template
+    if (!formTitle) {
+      setFormTitle(`Formulario - ${template.name}`)
     }
     // Avanzar automáticamente al siguiente paso
     setStep('details')
@@ -52,7 +60,7 @@ export function NewFormWizard({ workspaceSlug, templates }: NewFormWizardProps) 
   const handleNext = () => {
     if (step === 'template' && selectedTemplate) {
       setStep('details')
-    } else if (step === 'details' && formName.trim()) {
+    } else if (step === 'details' && formTitle.trim()) {
       setStep('preview')
     }
   }
@@ -66,7 +74,7 @@ export function NewFormWizard({ workspaceSlug, templates }: NewFormWizardProps) 
   }
 
   const handleSubmit = async () => {
-    if (!selectedTemplate || !formName.trim()) {
+    if (!selectedTemplate || !formTitle.trim()) {
       toast.error('Faltan datos requeridos')
       return
     }
@@ -75,8 +83,13 @@ export function NewFormWizard({ workspaceSlug, templates }: NewFormWizardProps) 
 
     try {
       await createFormFromTemplateAction({
-        name: formName.trim(),
-        description: formDescription.trim() || undefined,
+        title: formTitle.trim(),
+        title2: formTitle2.trim() || undefined,
+        color: formColor || undefined,
+        subtitle: formSubtitle.trim() || undefined,
+        projectName: projectName.trim() || undefined,
+        client: client.trim() || undefined,
+        allowEdits,
         workspaceSlug,
         templateId: selectedTemplate.id,
         fields: selectedTemplate.fields as FormField[]
@@ -172,31 +185,121 @@ export function NewFormWizard({ workspaceSlug, templates }: NewFormWizardProps) 
         <div className="grid gap-6 lg:grid-cols-2">
           <Card>
             <CardHeader>
-              <CardTitle>Detalles del formulario</CardTitle>
-              <CardDescription>
-                Personaliza el nombre y descripción de tu formulario
-              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="space-y-2">
+                  <Label htmlFor="form-name">Título del formulario</Label>
+                  <Input
+                    id="form-name"
+                    value={formTitle}
+                    onChange={(e) => setFormTitle(e.target.value)}
+                    placeholder="Brief"
+                    required
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="form-title2">Segunda línea del título (opcional)</Label>
+                  <Input
+                    id="form-title2"
+                    value={formTitle2}
+                    onChange={(e) => setFormTitle2(e.target.value)}
+                    placeholder="de Diseño"
+                  />
+                </div>
+              </div>
+
               <div className="space-y-2">
-                <Label htmlFor="form-name">Nombre del formulario</Label>
-                <Input
-                  id="form-name"
-                  value={formName}
-                  onChange={(e) => setFormName(e.target.value)}
-                  placeholder="Ej: Brief de Diseño - Cliente ABC"
-                />
+                <Label htmlFor="form-color">Color del círculo (opcional)</Label>
+                <Select value={formColor || "none"} onValueChange={(value) => setFormColor(value === "none" ? "" : value)}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecciona un color">
+                      {formColor ? (
+                        <div className="flex items-center gap-2">
+                          <div 
+                            className="w-4 h-4 rounded-full border" 
+                            style={{ backgroundColor: getTintaColor(formColor) }}
+                          />
+                          {tintaColorOptions.find(opt => opt.value === formColor)?.label}
+                        </div>
+                      ) : (
+                        "Sin color"
+                      )}
+                    </SelectValue>
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">Sin color</SelectItem>
+                    {tintaColorOptions.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        <div className="flex items-center gap-2">
+                          <div 
+                            className="w-4 h-4 rounded-full border" 
+                            style={{ backgroundColor: option.color }}
+                          />
+                          {option.label}
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <p className="text-xs text-muted-foreground">
+                  Solo aparece si hay segunda línea del título
+                </p>
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="form-description">Descripción (opcional)</Label>
+                <Label htmlFor="form-description">Subtítulo (opcional)</Label>
                 <Textarea
                   id="form-description"
-                  value={formDescription}
-                  onChange={(e) => setFormDescription(e.target.value)}
+                  value={formSubtitle}
+                  onChange={(e) => setFormSubtitle(e.target.value)}
                   placeholder="Describe el propósito de este formulario..."
                   rows={3}
                 />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="project-name">Nombre del Proyecto (opcional)</Label>
+                  <Input
+                    id="project-name"
+                    value={projectName}
+                    onChange={(e) => setProjectName(e.target.value)}
+                    placeholder="Ej: Campaña 2025"
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="client">Cliente (opcional)</Label>
+                  <Input
+                    id="client"
+                    value={client}
+                    onChange={(e) => setClient(e.target.value)}
+                    placeholder="Ej: Bodega XYZ"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <div className="flex items-center justify-between py-2">
+                  <div className="space-y-1">
+                    <Label htmlFor="allow-edits" className="text-sm font-medium">
+                      Múltiples envíos
+                    </Label>
+                    <p className="text-sm text-muted-foreground">
+                      {allowEdits 
+                        ? 'Permite múltiples respuestas del mismo cliente'
+                        : 'Solo permite una respuesta por cliente'
+                      }
+                    </p>
+                  </div>
+                  <Switch
+                    id="allow-edits"
+                    checked={allowEdits}
+                    onCheckedChange={setAllowEdits}
+                  />
+                </div>
               </div>
 
               <div className="pt-4 border-t">
@@ -211,7 +314,7 @@ export function NewFormWizard({ workspaceSlug, templates }: NewFormWizardProps) 
             </CardContent>
           </Card>
 
-          <TemplatePreview template={selectedTemplate} formName={formName.trim() || undefined} />
+          <TemplatePreview template={selectedTemplate} formName={formTitle.trim() || undefined} />
         </div>
       )}
 
@@ -227,13 +330,43 @@ export function NewFormWizard({ workspaceSlug, templates }: NewFormWizardProps) 
             <CardContent className="space-y-4">
               <div className="grid gap-4 sm:grid-cols-2">
                 <div>
-                  <Label className="text-sm font-medium text-muted-foreground">Nombre</Label>
-                  <p className="font-medium">{formName}</p>
+                  <Label className="text-sm font-medium text-muted-foreground">Título</Label>
+                  <div className="space-y-1">
+                    <p className="font-medium">{formTitle}</p>
+                    {formTitle2 && (
+                      <div className="flex items-center gap-2">
+                        <p className="text-sm text-muted-foreground">Segunda línea: {formTitle2}</p>
+                        {formColor && (
+                          <div className="flex items-center gap-1">
+                            <div 
+                              className="w-3 h-3 rounded-full border" 
+                              style={{ backgroundColor: getTintaColor(formColor) }}
+                            />
+                            <span className="text-xs text-muted-foreground">
+                              {tintaColorOptions.find(opt => opt.value === formColor)?.label}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
                 </div>
-                {formDescription && (
+                {formSubtitle && (
                   <div>
-                    <Label className="text-sm font-medium text-muted-foreground">Descripción</Label>
-                    <p className="text-sm">{formDescription}</p>
+                    <Label className="text-sm font-medium text-muted-foreground">Subtítulo</Label>
+                    <p className="text-sm">{formSubtitle}</p>
+                  </div>
+                )}
+                {projectName && (
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Proyecto</Label>
+                    <p className="text-sm">{projectName}</p>
+                  </div>
+                )}
+                {client && (
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Cliente</Label>
+                    <p className="text-sm">{client}</p>
                   </div>
                 )}
                 <div>
@@ -244,11 +377,15 @@ export function NewFormWizard({ workspaceSlug, templates }: NewFormWizardProps) 
                   <Label className="text-sm font-medium text-muted-foreground">Campos</Label>
                   <p className="font-medium">{(selectedTemplate.fields as FormField[]).length} campos</p>
                 </div>
+                <div>
+                  <Label className="text-sm font-medium text-muted-foreground">Múltiples envíos</Label>
+                  <p className="font-medium">{allowEdits ? 'Permitidos' : 'No permitidos'}</p>
+                </div>
               </div>
             </CardContent>
           </Card>
 
-          <TemplatePreview template={selectedTemplate} formName={formName.trim() || undefined} />
+          <TemplatePreview template={selectedTemplate} formName={formTitle.trim() || undefined} />
         </div>
       )}
 
@@ -272,7 +409,7 @@ export function NewFormWizard({ workspaceSlug, templates }: NewFormWizardProps) 
             onClick={handleNext}
             disabled={
               (step === 'template' && !selectedTemplate) ||
-              (step === 'details' && !formName.trim())
+              (step === 'details' && !formTitle.trim())
             }
           >
             Siguiente

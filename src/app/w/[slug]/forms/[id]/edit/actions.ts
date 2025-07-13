@@ -16,8 +16,13 @@ type ActionResult = {
 export async function updateFormAction(
   formId: string,
   data: {
-    name?: string
-    description?: string
+    title?: string
+    title2?: string
+    color?: string
+    subtitle?: string
+    projectName?: string
+    client?: string
+    allowEdits?: boolean
     isActive?: boolean
   }
 ): Promise<ActionResult> {

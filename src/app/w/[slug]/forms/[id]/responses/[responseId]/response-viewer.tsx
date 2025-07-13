@@ -437,7 +437,7 @@ export function ResponseViewer({ response }: ResponseViewerProps) {
             </div>
             <div className="flex justify-between">
               <span>Formulario:</span>
-              <span>{response.form.name}</span>
+              <span>{response.form.title2 ? `${response.form.title} ${response.form.title2}` : response.form.title}</span>
             </div>
             <div className="flex justify-between">
               <span>Workspace:</span>

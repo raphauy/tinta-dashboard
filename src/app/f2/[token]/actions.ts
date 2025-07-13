@@ -10,7 +10,7 @@ import { put } from "@vercel/blob"
 import { type FormField } from "@/types/form-field"
 
 /**
- * Server Action para procesar envío de formularios públicos (versión PDF-style)
+ * Server Action para procesar envío de formularios públicos
  */
 export async function submitFormResponse(formId: string, formData: Record<string, unknown>) {
   try {
@@ -135,7 +135,7 @@ export async function submitFormResponse(formId: string, formData: Record<string
       // No fallar la submission por errores de email
     }
 
-    console.log('📝 PDF-style form response created:', {
+    console.log('📝 Form response created:', {
       responseId: response.id,
       formName: response.form.title2 ? `${response.form.title} ${response.form.title2}` : response.form.title,
       workspaceName: response.form.workspace.name,
@@ -155,7 +155,7 @@ export async function submitFormResponse(formId: string, formData: Record<string
     }
 
   } catch (error) {
-    console.error('Error submitting PDF-style form response:', error)
+    console.error('Error submitting form response:', error)
     
     // Retornar error específico al usuario
     const errorMessage = error instanceof Error 
@@ -167,4 +167,18 @@ export async function submitFormResponse(formId: string, formData: Record<string
       message: errorMessage
     }
   }
+}
+
+/**
+ * Helper para validar token de formulario
+ * PLACEHOLDER - Se expandirá en siguientes fases
+ */
+export async function validateFormToken(token: string) {
+  // TODO: Implementar validación completa
+  // 1. Verificar token existe y es válido
+  // 2. Verificar formulario está activo
+  // 3. Verificar permisos de acceso
+  
+  console.log('🔐 Validating form token:', token)
+  return { valid: true }
 }

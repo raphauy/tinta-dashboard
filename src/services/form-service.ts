@@ -11,8 +11,12 @@ export function generateShareToken(): string {
 
 // ✅ Validaciones al inicio del archivo
 export const createFormSchema = z.object({
-  name: z.string().min(1, "Nombre requerido").max(255, "Nombre muy largo"),
-  description: z.string().max(1000, "Descripción muy larga").optional(),
+  title: z.string().min(1, "Título requerido").max(255, "Título muy largo"),
+  title2: z.string().max(255, "Segunda línea del título muy larga").optional(),
+  color: z.string().optional(), // Color del círculo (hex o nombre de color de marca)
+  subtitle: z.string().max(1000, "Subtítulo muy largo").optional(),
+  projectName: z.string().max(255, "Nombre de proyecto muy largo").optional(),
+  client: z.string().max(255, "Nombre de cliente muy largo").optional(),
   workspaceId: z.string().min(1, "ID de workspace requerido"),
   templateId: z.string().optional(),
   fields: z.array(formFieldSchema).min(1, "Al menos un campo requerido"),
@@ -62,8 +66,12 @@ export async function createForm(data: CreateFormData): Promise<FormWithRelation
   
   return await prisma.form.create({
     data: {
-      name: validated.name,
-      description: validated.description,
+      title: validated.title,
+      title2: validated.title2,
+      color: validated.color,
+      subtitle: validated.subtitle,
+      projectName: validated.projectName,
+      client: validated.client,
       workspaceId: validated.workspaceId,
       templateId: validated.templateId,
       fields: validated.fields,
@@ -172,8 +180,12 @@ export async function updateForm(
   return await prisma.form.update({
     where: { id },
     data: {
-      ...(validated.name && { name: validated.name }),
-      ...(validated.description !== undefined && { description: validated.description }),
+      ...(validated.title && { title: validated.title }),
+      ...(validated.title2 !== undefined && { title2: validated.title2 }),
+      ...(validated.color !== undefined && { color: validated.color }),
+      ...(validated.subtitle !== undefined && { subtitle: validated.subtitle }),
+      ...(validated.projectName !== undefined && { projectName: validated.projectName }),
+      ...(validated.client !== undefined && { client: validated.client }),
       ...(validated.templateId !== undefined && { templateId: validated.templateId }),
       ...(validated.fields && { fields: validated.fields }),
       ...(validated.allowEdits !== undefined && { allowEdits: validated.allowEdits }),
@@ -301,8 +313,8 @@ export async function searchFormsInWorkspace(
     where: {
       workspaceId,
       OR: [
-        { name: { contains: query, mode: 'insensitive' } },
-        { description: { contains: query, mode: 'insensitive' } }
+        { title: { contains: query, mode: 'insensitive' } },
+        { subtitle: { contains: query, mode: 'insensitive' } }
       ]
     },
     include: {

@@ -167,7 +167,7 @@ export function DraggableField({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor={`field-help-${field.id}`}>Texto de ayuda (opcional)</Label>
+            <Label htmlFor={`field-help-${field.id}`}>Pregunta para este campo</Label>
             <Textarea
               id={`field-help-${field.id}`}
               value={field.helpText || ''}

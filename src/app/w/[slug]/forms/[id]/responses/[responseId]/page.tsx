@@ -59,7 +59,7 @@ export default async function ResponseViewPage({ params }: ResponseViewPageProps
               href={`/w/${slug}/forms/${formId}`}
               className="hover:text-foreground transition-colors"
             >
-              {response.form.name}
+              {response.form.title2 ? `${response.form.title} ${response.form.title2}` : response.form.title}
             </Link>
             <span>/</span>
             <Link 
@@ -72,7 +72,7 @@ export default async function ResponseViewPage({ params }: ResponseViewPageProps
             <span>Ver Respuesta</span>
           </div>
           <h1 className="text-3xl font-bold tracking-tight">
-            Respuesta de &ldquo;{response.form.name}&rdquo;
+            Respuesta de &ldquo;{response.form.title2 ? `${response.form.title} ${response.form.title2}` : response.form.title}&rdquo;
           </h1>
           <p className="text-muted-foreground">
             Enviada el <span suppressHydrationWarning>
