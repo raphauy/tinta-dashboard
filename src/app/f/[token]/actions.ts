@@ -45,7 +45,7 @@ export async function submitFormResponse(formId: string, formData: Record<string
     const fieldsWithAttachments = fields.filter(field => field.allowAttachments)
 
     for (const field of fieldsWithAttachments) {
-      const fieldFiles = formData[field.id]
+      const fieldFiles = formData[`${field.id}_files`]
       if (fieldFiles && Array.isArray(fieldFiles)) {
         for (const file of fieldFiles) {
           if (file instanceof File) {
@@ -89,13 +89,12 @@ export async function submitFormResponse(formId: string, formData: Record<string
 
     // 3. Preparar datos para guardar (sin archivos)
     const cleanData = { ...formData }
-    fieldsWithAttachments.forEach(field => {
-      const fieldValue = cleanData[field.id]
-      if (fieldValue && Array.isArray(fieldValue)) {
-        // Solo remover si es un array de archivos, mantener el texto
-        delete cleanData[field.id]
+    
+    // Remover las claves especiales de archivos (_files)
+    Object.keys(cleanData).forEach(key => {
+      if (key.endsWith('_files')) {
+        delete cleanData[key]
       }
-      // Si no es un array, es texto, mantenerlo
     })
 
     // 4. Crear la respuesta en la base de datos

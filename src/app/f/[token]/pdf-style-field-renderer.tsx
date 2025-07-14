@@ -9,6 +9,7 @@ import { useRef, useState } from 'react'
 
 interface PdfStyleFieldRendererProps {
   field: FormField
+  fieldIndex?: number
   value: string
   onChange: (value: string) => void
   error?: string
@@ -18,6 +19,7 @@ interface PdfStyleFieldRendererProps {
 
 export function PdfStyleFieldRenderer({ 
   field, 
+  fieldIndex,
   value, 
   onChange, 
   error,
@@ -81,7 +83,7 @@ export function PdfStyleFieldRenderer({
       {field.helpText && (
         <div className="text-stone-600 dark:text-gray-700 leading-relaxed">
           <span className="font-medium">
-            {String(field.order).padStart(2, '0')}.
+            {String(fieldIndex ?? Math.max(1, field.order)).padStart(2, '0')}.
           </span>{" "}
           {field.helpText}
           {field.required && <span className="text-red-500 ml-1">*</span>}

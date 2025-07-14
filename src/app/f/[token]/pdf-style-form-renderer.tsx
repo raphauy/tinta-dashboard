@@ -76,10 +76,11 @@ export function PdfStyleFormRenderer({ form }: PdfStyleFormRendererProps) {
       // Combinar datos del formulario con archivos adjuntos
       const dataWithAttachments = { ...formData }
       
-      // Agregar archivos a los datos del formulario
+      // Agregar archivos a los datos del formulario usando una clave especial
       Object.entries(attachments).forEach(([fieldId, files]) => {
         if (files.length > 0) {
-          dataWithAttachments[fieldId] = files
+          // Usar una clave especial para archivos, preservando el texto original
+          dataWithAttachments[`${fieldId}_files`] = files
         }
       })
       
@@ -138,10 +139,11 @@ export function PdfStyleFormRenderer({ form }: PdfStyleFormRendererProps) {
     <div className="space-y-8">
       {/* Formulario */}
       <form onSubmit={handleSubmit} className="space-y-8" noValidate>
-        {sortedFields.map((field) => (
+        {sortedFields.map((field, index) => (
           <PdfStyleFieldRenderer
             key={field.id}
             field={field}
+            fieldIndex={index + 1}
             value={typeof formData[field.id] === 'string' ? formData[field.id] as string : ''}
             onChange={(value: string) => handleFieldChange(field.id, value)}
             error={errors[field.id]}
