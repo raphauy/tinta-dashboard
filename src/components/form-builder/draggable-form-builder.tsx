@@ -63,7 +63,7 @@ export function DraggableFormBuilder({
 
       const reorderedFields = arrayMove(fields, oldIndex, newIndex).map((field, index) => ({
         ...field,
-        order: index
+        order: index + 1
       }))
 
       onFieldsChange(reorderedFields)
@@ -148,7 +148,7 @@ export function DraggableFormBuilder({
     // Update orders for all fields
     const reorderedFields = newFields.map((field, index) => ({
       ...field,
-      order: index
+      order: index + 1
     }))
 
     onFieldsChange(reorderedFields)

@@ -40,7 +40,7 @@ export function FormEditForm({ form, workspaceSlug }: FormEditFormProps) {
     return formFields.map((field, index) => ({
       ...field,
       id: field.id || `field-${Date.now()}-${index}`,
-      order: field.order ?? index
+      order: field.order ?? index + 1
     }))
   })
   const [isFieldsSubmitting, setIsFieldsSubmitting] = useState(false)

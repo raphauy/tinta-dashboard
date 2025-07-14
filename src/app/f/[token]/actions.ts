@@ -90,7 +90,12 @@ export async function submitFormResponse(formId: string, formData: Record<string
     // 3. Preparar datos para guardar (sin archivos)
     const cleanData = { ...formData }
     fieldsWithAttachments.forEach(field => {
-      delete cleanData[field.id] // Remover archivos de los datos principales
+      const fieldValue = cleanData[field.id]
+      if (fieldValue && Array.isArray(fieldValue)) {
+        // Solo remover si es un array de archivos, mantener el texto
+        delete cleanData[field.id]
+      }
+      // Si no es un array, es texto, mantenerlo
     })
 
     // 4. Crear la respuesta en la base de datos

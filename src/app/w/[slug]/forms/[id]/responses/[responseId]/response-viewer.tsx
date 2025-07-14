@@ -227,12 +227,17 @@ export function ResponseViewer({ response }: ResponseViewerProps) {
             // Buscar archivos asociados a este campo
             const fieldFiles = response.files.filter(file => file.fieldName === fieldId)
             
+            // Buscar el label del campo en el formulario
+            const formFields = response.form.fields as Array<{ id: string; label: string; }>
+            const field = formFields.find(f => f.id === fieldId)
+            const fieldLabel = field?.label || fieldId
+            
             return (
               <div key={fieldId}>
                 <div className="space-y-3">
                   <div className="flex items-center gap-2">
                     <h4 className="font-medium text-sm text-muted-foreground">
-                      Campo: {fieldId}
+                      Campo: {fieldLabel}
                     </h4>
                     {fieldFiles.length > 0 && (
                       <Badge variant="secondary" className="text-xs">

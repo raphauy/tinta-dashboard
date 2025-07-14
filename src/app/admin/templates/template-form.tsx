@@ -27,7 +27,7 @@ export function TemplateForm({ template }: TemplateFormProps) {
     return templateFields.map((field, index) => ({
       ...field,
       id: field.id || `field-${Date.now()}-${index}`,
-      order: field.order ?? index
+      order: field.order ?? index + 1
     }))
   })
 
