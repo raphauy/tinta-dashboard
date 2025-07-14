@@ -1,9 +1,9 @@
-import { auth } from "@/lib/auth"
-import { getWorkspaceBySlug, getWorkspaceUsers } from "@/services/workspace-service"
-import { getFormsByWorkspace } from "@/services/form-service"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Users, UserCheck, Shield, Calendar, FileText, BarChart } from "lucide-react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { auth } from "@/lib/auth"
+import { getFormsByWorkspace } from "@/services/form-service"
+import { getWorkspaceBySlug, getWorkspaceUsers } from "@/services/workspace-service"
+import { Calendar, FileText, Shield, UserCheck, Users } from "lucide-react"
 import { notFound } from "next/navigation"
 
 interface WorkspaceDashboardProps {
