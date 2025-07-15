@@ -36,7 +36,7 @@ export default function NotFoundPublicForm() {
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Button variant="outline" asChild>
-                <a href="mailto:contacto@tinta.wine">
+                <a href="mailto:hola@tinta.wine">
                   <Mail className="w-4 h-4 mr-2" />
                   Contactar Soporte
                 </a>

@@ -88,7 +88,7 @@ export function AdminSidebarClient({ children, userCount, workspaceCount, templa
         {/* Header with trigger and title like Claude */}
         <SidebarHeader className="flex flex-row items-center justify-between border-b p-2">
           <h2 className="text-lg flex flex-row items-center gap-2 pl-1 font-semibold truncate group-data-[collapsible=icon]:hidden">
-            <Image src="/logo.png" alt="Admin" width={32} height={32} />
+            <Image src="/tinta-logo.ico" alt="Admin" width={32} height={32} />
             Admin
           </h2>
           <SidebarTrigger className="h-8 w-8 shrink-0" />

@@ -128,10 +128,10 @@ export default async function PdfStyleFormPage({ params }: PdfStyleFormPageProps
               Si tienes preguntas o necesitas información adicional, 
               contáctanos en{" "}
               <a 
-                href="mailto:contacto@tinta.wine" 
+                href="mailto:hola@tinta.wine" 
                 className="text-tinta-verde-uva hover:underline"
               >
-                contacto@tinta.wine
+                hola@tinta.wine
               </a>
             </p>
           </div>

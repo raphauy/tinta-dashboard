@@ -127,8 +127,8 @@ export function PdfStyleFormRenderer({ form }: PdfStyleFormRendererProps) {
         
         <p className="text-xs text-stone-500 dark:text-gray-600">
           Si tienes alguna pregunta, contáctanos en{" "}
-          <a href="mailto:contacto@tinta.wine" className="text-tinta-verde-uva hover:underline">
-            contacto@tinta.wine
+          <a href="mailto:hola@tinta.wine" className="text-tinta-verde-uva hover:underline">
+            hola@tinta.wine
           </a>
         </p>
       </div>

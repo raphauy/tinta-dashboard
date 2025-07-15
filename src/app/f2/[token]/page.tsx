@@ -100,10 +100,10 @@ export default async function PublicFormPage({ params }: PublicFormPageProps) {
                 Si tienes preguntas o necesitas información adicional, 
                 contáctanos en{" "}
                 <a 
-                  href="mailto:contacto@tinta.wine" 
+                  href="mailto:hola@tinta.wine" 
                   className="text-primary hover:underline"
                 >
-                  contacto@tinta.wine
+                  hola@tinta.wine
                 </a>
               </p>
             </div>

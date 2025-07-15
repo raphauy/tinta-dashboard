@@ -170,8 +170,8 @@ export function PublicFormRenderer({ form }: PublicFormRendererProps) {
           </div>
           <p className="text-xs text-muted-foreground">
             Si tienes alguna pregunta, contáctanos en{" "}
-            <a href="mailto:contacto@tinta.wine" className="text-primary hover:underline">
-              contacto@tinta.wine
+            <a href="mailto:hola@tinta.wine" className="text-primary hover:underline">
+              hola@tinta.wine
             </a>
           </p>
         </CardContent>

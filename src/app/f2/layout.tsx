@@ -97,10 +97,10 @@ export default function PublicFormLayout({
               <p className="text-xs text-tinta-gris/70 dark:text-gray-400">
                 ¿Tienes preguntas? Contáctanos en{" "}
                 <a 
-                  href="mailto:contacto@tinta.wine" 
+                  href="mailto:hola@tinta.wine" 
                   className="text-tinta-verde-uva dark:text-tinta-paper hover:underline font-medium"
                 >
-                  contacto@tinta.wine
+                  hola@tinta.wine
                 </a>
               </p>
             </div>
