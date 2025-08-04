@@ -47,3 +47,32 @@ export async function updateResponseStatusAction(
     }
   }
 }
+
+/**
+ * Server Action para verificar permisos antes de exportar PDF
+ */
+export async function exportResponseToPDFAction(responseId: string) {
+  try {
+    const session = await auth()
+    if (!session?.user) {
+      return {
+        success: false,
+        message: "No autenticado"
+      }
+    }
+
+    // Solo verificamos que el usuario está autenticado
+    // La validación completa se hace en el API route
+    return {
+      success: true,
+      responseId,
+      message: "Autorizado para exportar"
+    }
+  } catch (error) {
+    console.error("Error verificando permisos:", error)
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : "Error al verificar permisos"
+    }
+  }
+}

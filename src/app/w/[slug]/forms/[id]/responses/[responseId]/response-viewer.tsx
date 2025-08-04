@@ -24,10 +24,12 @@ import {
   Image,
   FileSpreadsheet,
   FileCode,
-  FileArchive
+  FileArchive,
+  FileDown,
+  Loader
 } from "lucide-react"
 import { type ResponseWithForm } from "@/services/form-response-service"
-import { updateResponseStatusAction } from "../actions"
+import { updateResponseStatusAction, exportResponseToPDFAction } from "../actions"
 import { toast } from "sonner"
 
 interface ResponseViewerProps {
@@ -82,6 +84,7 @@ const formatFileSize = (bytes: number) => {
 export function ResponseViewer({ response }: ResponseViewerProps) {
   const [loadingStatusChange, setLoadingStatusChange] = useState(false)
   const [previewImage, setPreviewImage] = useState<string | null>(null)
+  const [exportingPDF, setExportingPDF] = useState(false)
 
   const handleStatusChange = async (newStatus: ResponseStatus) => {
     setLoadingStatusChange(true)
@@ -100,6 +103,59 @@ export function ResponseViewer({ response }: ResponseViewerProps) {
       toast.error("Error al actualizar el estado")
     } finally {
       setLoadingStatusChange(false)
+    }
+  }
+
+  const handleExportPDF = async () => {
+    setExportingPDF(true)
+    
+    try {
+      // Primero verificar permisos con el Server Action
+      const authResult = await exportResponseToPDFAction(response.id)
+      
+      if (!authResult.success) {
+        toast.error(authResult.message || "Error al verificar permisos")
+        return
+      }
+
+      // Luego llamar al API route para generar el PDF
+      const pdfResponse = await fetch('/api/pdf/generate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ responseId: response.id }),
+      })
+
+      if (!pdfResponse.ok) {
+        const error = await pdfResponse.json()
+        toast.error(error.error || "Error al generar PDF")
+        return
+      }
+
+      // Descargar el PDF
+      const blob = await pdfResponse.blob()
+      const url = window.URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = url
+      
+      // Extraer el nombre del archivo del header Content-Disposition
+      const contentDisposition = pdfResponse.headers.get('content-disposition')
+      const filenameMatch = contentDisposition?.match(/filename="(.+)"/)
+      const filename = filenameMatch ? filenameMatch[1] : 'respuesta.pdf'
+      
+      link.download = filename
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      window.URL.revokeObjectURL(url)
+      
+      toast.success("PDF exportado correctamente")
+    } catch (error) {
+      console.error("Error exporting PDF:", error)
+      toast.error("Error al exportar el PDF")
+    } finally {
+      setExportingPDF(false)
     }
   }
 
@@ -168,13 +224,32 @@ export function ResponseViewer({ response }: ResponseViewerProps) {
               </CardDescription>
             </div>
             
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" disabled={loadingStatusChange}>
-                  <MoreHorizontal className="h-4 w-4 mr-2" />
-                  Cambiar Estado
-                </Button>
-              </DropdownMenuTrigger>
+            <div className="flex items-center gap-2">
+              <Button 
+                variant="outline" 
+                onClick={handleExportPDF}
+                disabled={exportingPDF}
+              >
+                {exportingPDF ? (
+                  <>
+                    <Loader className="h-4 w-4 mr-2 animate-spin" />
+                    Exportando...
+                  </>
+                ) : (
+                  <>
+                    <FileDown className="h-4 w-4 mr-2" />
+                    Exportar PDF
+                  </>
+                )}
+              </Button>
+              
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" disabled={loadingStatusChange}>
+                    <MoreHorizontal className="h-4 w-4 mr-2" />
+                    Cambiar Estado
+                  </Button>
+                </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 {response.status !== "new" && (
                   <DropdownMenuItem 
@@ -207,6 +282,7 @@ export function ResponseViewer({ response }: ResponseViewerProps) {
                 )}
               </DropdownMenuContent>
             </DropdownMenu>
+            </div>
           </div>
         </CardHeader>
       </Card>
