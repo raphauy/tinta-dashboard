@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { auth } from '@/lib/auth'
-import { deleteForm, updateFormStatus, createForm, generateShareToken } from '@/services/form-service'
+import { deleteForm, updateFormStatus, createForm, generateShareToken, generateShortCode } from '@/services/form-service'
 import { getWorkspaceBySlug } from '@/services/workspace-service'
 import { type CreateFormData } from '@/services/form-service'
 import { type FormField } from '@/types/form-field'
@@ -90,6 +90,7 @@ export async function createFormFromTemplateAction(data: {
     }
 
     const shareToken = generateShareToken()
+    const shortCode = generateShortCode(6)
 
     const formData: CreateFormData = {
       title: data.title,
@@ -103,6 +104,7 @@ export async function createFormFromTemplateAction(data: {
       fields: data.fields,
       allowEdits: data.allowEdits ?? false,
       shareToken,
+      shortCode,
       createdById: session.user.id
     }
 

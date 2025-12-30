@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache"
 import { submitFormResponse as submitResponse } from "@/services/form-response-service"
-import { getFormByToken } from "@/services/form-service"
+import { getFormByTokenOrCode } from "@/services/form-service"
 import { sendFormSubmissionNotification } from "@/services/email-service"
 import { getClientIP } from "@/lib/get-client-ip"
 import { prisma } from "@/lib/prisma"
@@ -14,8 +14,8 @@ import { type FormField } from "@/types/form-field"
  */
 export async function submitFormResponse(formId: string, formData: Record<string, unknown>) {
   try {
-    // 1. Obtener el formulario y validar que existe y está activo
-    const form = await getFormByToken(formId) // Usamos el token como formId en este contexto
+    // 1. Obtener el formulario y validar que existe y está activo (soporta token largo y shortCode)
+    const form = await getFormByTokenOrCode(formId) // Usamos el token/shortCode como formId en este contexto
     if (!form || !form.isActive) {
       throw new Error('Formulario no encontrado o inactivo')
     }

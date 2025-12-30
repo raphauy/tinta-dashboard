@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation"
-import { getFormByToken, isFormActiveByToken } from "@/services/form-service"
+import { getFormByTokenOrCode, isFormActiveByTokenOrCode } from "@/services/form-service"
 import { PdfStyleFormRenderer } from "./pdf-style-form-renderer"
 import { CheckCircle, MessageCircle } from "lucide-react"
 import { getTintaColor } from "@/lib/tinta-colors"
@@ -13,10 +13,10 @@ interface PdfStyleFormPageProps {
 export default async function PdfStyleFormPage({ params }: PdfStyleFormPageProps) {
   const { token } = await params
 
-  // Validar que el formulario existe y está activo
+  // Validar que el formulario existe y está activo (soporta token largo y shortCode)
   const [form, isActive] = await Promise.all([
-    getFormByToken(token),
-    isFormActiveByToken(token)
+    getFormByTokenOrCode(token),
+    isFormActiveByTokenOrCode(token)
   ])
 
   if (!form || !isActive) {
@@ -145,7 +145,7 @@ export default async function PdfStyleFormPage({ params }: PdfStyleFormPageProps
 
 export async function generateMetadata({ params }: PdfStyleFormPageProps) {
   const { token } = await params
-  const form = await getFormByToken(token)
+  const form = await getFormByTokenOrCode(token)
   
   if (!form) {
     return {

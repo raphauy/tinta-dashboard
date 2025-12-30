@@ -5,7 +5,7 @@ import { ArrowLeft, ExternalLink } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
-import { getFormById } from '@/services/form-service'
+import { getFormById, ensureShortCode } from '@/services/form-service'
 import { ShareSettingsForm } from './share-settings-form'
 
 interface SharePageProps {
@@ -51,7 +51,10 @@ async function SharePageContent({ workspaceSlug, formId }: { workspaceSlug: stri
     notFound()
   }
 
-  const publicUrl = `${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/f/${form.shareToken}`
+  // Asegurar que el formulario tenga un shortCode (genera uno si no existe)
+  const shortCode = await ensureShortCode(formId)
+  const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000'
+  const publicUrl = `${baseUrl}/f/${shortCode}`
 
   return (
     <div className="space-y-6">

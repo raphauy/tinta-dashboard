@@ -9,6 +9,18 @@ export function generateShareToken(): string {
   return crypto.randomBytes(32).toString('hex')
 }
 
+// ✅ Generación de códigos cortos (base62)
+const BASE62_ALPHABET = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
+
+export function generateShortCode(length: number = 6): string {
+  const bytes = crypto.randomBytes(length)
+  let result = ''
+  for (let i = 0; i < length; i++) {
+    result += BASE62_ALPHABET[bytes[i] % 62]
+  }
+  return result
+}
+
 // ✅ Validaciones al inicio del archivo
 export const createFormSchema = z.object({
   title: z.string().min(1, "Título requerido").max(255, "Título muy largo"),
@@ -22,13 +34,15 @@ export const createFormSchema = z.object({
   fields: z.array(formFieldSchema).min(1, "Al menos un campo requerido"),
   allowEdits: z.boolean().default(false),
   shareToken: z.string().min(1, "Token de compartir requerido"),
+  shortCode: z.string().min(1, "Código corto requerido").optional(),
   createdById: z.string().min(1, "ID de creador requerido")
 })
 
-export const updateFormSchema = createFormSchema.partial().omit({ 
-  workspaceId: true, 
-  shareToken: true, 
-  createdById: true 
+export const updateFormSchema = createFormSchema.partial().omit({
+  workspaceId: true,
+  shareToken: true,
+  shortCode: true,
+  createdById: true
 }).extend({
   isActive: z.boolean().optional()
 })
@@ -77,6 +91,7 @@ export async function createForm(data: CreateFormData): Promise<FormWithRelation
       fields: validated.fields,
       allowEdits: validated.allowEdits,
       shareToken: validated.shareToken,
+      shortCode: validated.shortCode,
       createdById: validated.createdById
     },
     include: {
@@ -165,6 +180,45 @@ export async function getFormByToken(token: string): Promise<FormWithWorkspaceUs
         select: { responses: true }
       }
     }
+  })
+}
+
+/**
+ * Obtiene un formulario por token largo O código corto (compatibilidad dual)
+ * Detecta automáticamente si es un token largo (64 chars hex) o shortCode (~6 chars)
+ */
+export async function getFormByTokenOrCode(identifier: string): Promise<FormWithWorkspaceUsers | null> {
+  // Token largo: 64 caracteres hexadecimales
+  const isLongToken = identifier.length === 64 && /^[a-f0-9]+$/i.test(identifier)
+
+  const formInclude = {
+    workspace: {
+      include: {
+        users: {
+          include: {
+            user: {
+              select: { id: true, name: true, email: true }
+            }
+          }
+        }
+      }
+    },
+    _count: {
+      select: { responses: true }
+    }
+  }
+
+  if (isLongToken) {
+    return await prisma.form.findUnique({
+      where: { shareToken: identifier },
+      include: formInclude
+    })
+  }
+
+  // Buscar por shortCode
+  return await prisma.form.findUnique({
+    where: { shortCode: identifier },
+    include: formInclude
   })
 }
 
@@ -269,13 +323,73 @@ export async function deleteForm(id: string): Promise<void> {
  */
 export async function isFormActiveByToken(token: string): Promise<boolean> {
   const count = await prisma.form.count({
-    where: { 
+    where: {
       shareToken: token,
       isActive: true
     }
   })
-  
+
   return count > 0
+}
+
+/**
+ * Verifica si un formulario existe y está activo (por token largo O shortCode)
+ */
+export async function isFormActiveByTokenOrCode(identifier: string): Promise<boolean> {
+  // Token largo: 64 caracteres hexadecimales
+  const isLongToken = identifier.length === 64 && /^[a-f0-9]+$/i.test(identifier)
+
+  const count = await prisma.form.count({
+    where: {
+      ...(isLongToken ? { shareToken: identifier } : { shortCode: identifier }),
+      isActive: true
+    }
+  })
+
+  return count > 0
+}
+
+/**
+ * Asegura que un formulario tenga un shortCode (genera uno si no existe)
+ * Útil para formularios existentes que no tenían shortCode
+ */
+export async function ensureShortCode(formId: string): Promise<string> {
+  const form = await prisma.form.findUnique({
+    where: { id: formId },
+    select: { shortCode: true }
+  })
+
+  if (form?.shortCode) {
+    return form.shortCode
+  }
+
+  // Generar nuevo shortCode con reintentos para manejar colisiones
+  let attempts = 0
+  const maxAttempts = 5
+
+  while (attempts < maxAttempts) {
+    const newCode = generateShortCode(6)
+    try {
+      await prisma.form.update({
+        where: { id: formId },
+        data: { shortCode: newCode }
+      })
+      return newCode
+    } catch (error) {
+      // Si hay colisión de unique constraint, reintentar
+      if (
+        error instanceof Error &&
+        'code' in error &&
+        (error as { code: string }).code === 'P2002'
+      ) {
+        attempts++
+        continue
+      }
+      throw error
+    }
+  }
+
+  throw new Error('No se pudo generar un código único después de varios intentos')
 }
 
 /**

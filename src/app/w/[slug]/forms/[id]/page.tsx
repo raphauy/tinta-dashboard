@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
-import { getFormById } from '@/services/form-service'
+import { getFormById, ensureShortCode } from '@/services/form-service'
 import { type FormField } from '@/types/form-field'
 import { CopyLinkButton } from './copy-link-button'
 import { getTintaColor, tintaColorOptions } from '@/lib/tinta-colors'
@@ -55,7 +55,10 @@ async function FormDetailContent({ workspaceSlug, formId }: { workspaceSlug: str
   }
 
   const fields = form.fields as FormField[]
-  const publicUrl = `${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/f/${form.shareToken}`
+
+  // Asegurar que el formulario tenga un shortCode (genera uno si no existe)
+  const shortCode = await ensureShortCode(formId)
+  const publicUrl = `${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/f/${shortCode}`
 
   return (
     <div className="space-y-6">

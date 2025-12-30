@@ -147,7 +147,8 @@ model Form {
   fields       Json          // Estructura de campos personalizada
   workspaceId  String
   templateId   String?       // Plantilla de origen (opcional)
-  shareToken   String        @unique // Token para enlace público
+  shareToken   String        @unique // Token para enlace público (64 chars hex)
+  shortCode    String?       @unique // Código corto para URLs (6 chars base62)
   isActive     Boolean       @default(true)
   allowEdits   Boolean       @default(false) // Permitir ediciones múltiples
   createdById  String
@@ -161,6 +162,7 @@ model Form {
   responses   FormResponse[]
   
   @@index([shareToken])
+  @@index([shortCode])
   @@index([workspaceId])
   @@map("forms")
 }
